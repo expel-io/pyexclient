@@ -1,0 +1,10 @@
+.cache/
+.coverage
+htmlcov
+junit
+
+*.pyc
+*.sw*
+
+*.backup
+.pytest_cache/
