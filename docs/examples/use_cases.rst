@@ -1,13 +1,5 @@
 .. _usecases:
 
-Example use cases
-=================
-
-This section outlines very common use cases we’ve heard about from customers wanting to further integrate with our platform. There are three types of examples documented in this section.
-
-1. Snippet -- This is code self contained in the documentation. Usually just a few lines.
-2. Script -- This is a whole python script that accomplishes the use cases. A brief description on each script is provided. The scripts themselves are in examples/ directory. 
-3. Notebook - A jupyter notebook that implements, mostly experimental concepts that forward leaning customers might be interested in. 
 
 .. _snippet auth:
    
@@ -104,7 +96,7 @@ Iterate over all the investigations and print their status.
 .. _snippet list comments:
 
 Snippet: List comments 
---------------------------------------
+----------------------
 
 List all comments
 
@@ -138,7 +130,7 @@ Find the top 10 investigative actions by number of times they are issued.
 .. _snippet create investigation:
 
 Snippet: Creating new investigation 
--------------------------------------------------
+-----------------------------------
 
 Create a new investigation in Workbench.
 
@@ -147,7 +139,7 @@ Or
 .. _snippet list open investigations:
 
 Snippet: List open investigation 
--------------------------------------------------
+--------------------------------
 
 List open investigations in Workbench.
 
@@ -238,13 +230,13 @@ There’s a fully documented script located in examples/list_dest_ip.py. This sc
 .. _script poll for ransomware:
 
 Script: Poll for ransomware Incidents
-------------------------------------------------
+-------------------------------------
 There’s a fully documented script located in examples/poll_ransomware_incidents.py. This script will poll Expel Workbench for any incidents created in the past five minutes that involved ransomware. The script will extract the asset ID (if provided by the EDR) and print that to screen. It’s the starting point for customers who are interested in SOAR integration. 
 
 .. _script bidirectional jira:
 
 Script: Bi-Directional State (JIRA)
-------------------------------------------------
+-----------------------------------
 This script will sync state between JIRA tickets and Expel Workbench. It’ll sync the following to JIRA from Expel Workbench:
 
 * Investigative Actions details and outcome as sub tasks
