@@ -25,7 +25,8 @@ logger = logging.basicConfig(level=logging.DEBUG)
 
 
 class operator(object):
-    rhs = []
+    def __init__(self):
+        self.rhs = []
 
     def create(self):
         return self.rhs
@@ -38,8 +39,10 @@ class notnull(operator):
         >>> for ea in xc.expel_alerts.search(close_comment=notnull()):
         >>>     print("%s has a close comment of %s" % (ea.expel_name, ea.close_comment))
     '''
-    rhs = ["\u2400false"]
     def __init__(self, value=False):
+        super().__init__()
+
+        self.rhs = ["\u2400false"]
         if value is True:
             self.rhs = ["\u2400true"]
 
@@ -51,8 +54,10 @@ class isnull(operator):
         >>> for ea in xc.expel_alerts.search(close_comment=isnull()):
         >>>     print("%s has no close comment" % ea.expel_name)
     '''
-    rhs = "\u2400true"
     def __init__(self, value=True):
+        super().__init__()
+
+        self.rhs = ["\u2400true"]
         if value is False:
             self.rhs = ["\u2400false"]
 
@@ -68,6 +73,8 @@ class contains(operator):
         >>>     print("%s contains foo in the close comment" % ea.expel_name)
     '''
     def __init__(self, *args):
+        super().__init__()
+
         for substr in args:
             self.rhs.append(':%s' % substr)
 
@@ -83,6 +90,8 @@ class startswith(operator):
         >>>     print("%s starts with foo in the close comment" % ea.expel_name)
     '''
     def __init__(self, swith):
+        super().__init__()
+
         self.rhs = ['^%s' % swith]
 
 
@@ -98,6 +107,8 @@ class neq(operator):
         >>>     print("%s has a close comment that is not equal to 'foo'" % ea.expel_name)
     '''
     def __init__(self, *args):
+        super().__init__()
+
         for value in args:
             self.rhs.append('!%s' % value)
 
@@ -114,9 +125,11 @@ class gt(operator):
     '''
 
     def __init__(self, value):
+        super().__init__()
+
         if type(value) == datetime.datetime:
             value = value.isoformat()
-        self.rhs = '>%s' % value
+        self.rhs = ['>%s' % value]
 
 class lt(operator):
     '''
@@ -130,9 +143,11 @@ class lt(operator):
         >>>     print("%s was created before 2020-01-01" % ea.expel_name)
     '''
     def __init__(self, value):
+        super().__init__()
+
         if type(value) == datetime.datetime:
             value = value.isoformat()
-        self.rhs = '<%s' % value
+        self.rhs = ['<%s' % value]
 
 class window(object):
     '''
@@ -205,7 +220,7 @@ class relationship(object):
             raise Exception("relationship() operator can only be used to define a relationship one level deep. Got %d levels with path %s" % (len(self.rel_parts), self.rel_path))
 
     def create(self, rels):
-        value = self.value
+        value = [self.value]
         if is_operator(self.value):
             value = self.value.create()
 
@@ -216,7 +231,12 @@ class relationship(object):
         qstr = 'filter' + ''.join(['[%s]' % part for part in self.rel_parts])
         if self.has_id:
             qstr += '[id]'
-        return [(qstr, value)]
+
+        results = []
+        for rhs in value:
+            results.append((qstr, rhs))
+        print("REL: ", results)
+        return results
 
 
 def is_operator(valu):
@@ -1069,6 +1089,8 @@ class InvestigativeActionsResourceInstance(FilesResourceInstance):
 
 class ActivityMetrics(ResourceInstance):
     '''
+    .. _api activity_metrics:
+
     Defines/retrieves expel.io activity_metric records 
 
     Resource type name is **activity_metrics**.
@@ -1127,6 +1149,8 @@ class ActivityMetrics(ResourceInstance):
 
 class Actors(ResourceInstance):
     '''
+    .. _api actors:
+
     Defines/retrieves expel.io actor records 
 
     Resource type name is **actors**.
@@ -1196,6 +1220,8 @@ class Actors(ResourceInstance):
 
 class ApiKeys(ResourceInstance):
     '''
+    .. _api api_keys:
+
     Defines/retrieves expel.io api_key records. These can only be created by a user and require an OTP token. 
 
     Resource type name is **api_keys**.
@@ -1258,6 +1284,8 @@ class ApiKeys(ResourceInstance):
 
 class AssemblerImages(ResourceInstance):
     '''
+    .. _api assembler_images:
+
     Assembler Images 
 
     Resource type name is **assembler_images**.
@@ -1313,6 +1341,8 @@ class AssemblerImages(ResourceInstance):
 
 class Assemblers(ResourceInstance):
     '''
+    .. _api assemblers:
+
     Assemblers 
 
     Resource type name is **assemblers**.
@@ -1390,6 +1420,8 @@ class Assemblers(ResourceInstance):
 
 class CommentHistories(ResourceInstance):
     '''
+    .. _api comment_histories:
+
     Defines/retrieves expel.io comment_history records 
 
     Resource type name is **comment_histories**.
@@ -1427,6 +1459,8 @@ class CommentHistories(ResourceInstance):
 
 class Comments(ResourceInstance):
     '''
+    .. _api comments:
+
     Defines/retrieves expel.io comment records 
 
     Resource type name is **comments**.
@@ -1468,6 +1502,8 @@ class Comments(ResourceInstance):
 
 class ConfigurationDefaults(ResourceInstance):
     '''
+    .. _api configuration_defaults:
+
     Configuration defaults 
 
     Resource type name is **configuration_defaults**.
@@ -1527,6 +1563,8 @@ class ConfigurationDefaults(ResourceInstance):
 
 class ConfigurationLabels(ResourceInstance):
     '''
+    .. _api configuration_labels:
+
     Configuration labels 
 
     Resource type name is **configuration_labels**.
@@ -1566,6 +1604,8 @@ class ConfigurationLabels(ResourceInstance):
 
 class Configurations(ResourceInstance):
     '''
+    .. _api configurations:
+
     Defines/retrieves expel.io configuration records 
 
     Resource type name is **configurations**.
@@ -1636,6 +1676,8 @@ class Configurations(ResourceInstance):
 
 class ContextLabelActions(ResourceInstance):
     '''
+    .. _api context_label_actions:
+
     Defines/retrieves expel.io context_label_action records 
 
     Resource type name is **context_label_actions**.
@@ -1677,6 +1719,8 @@ class ContextLabelActions(ResourceInstance):
 
 class ContextLabelTags(ResourceInstance):
     '''
+    .. _api context_label_tags:
+
     Defines/retrieves expel.io context_label_tag records 
 
     Resource type name is **context_label_tags**.
@@ -1722,6 +1766,8 @@ class ContextLabelTags(ResourceInstance):
 
 class ContextLabels(ResourceInstance):
     '''
+    .. _api context_labels:
+
     Defines/retrieves expel.io context_label records 
 
     Resource type name is **context_labels**.
@@ -1790,6 +1836,8 @@ class ContextLabels(ResourceInstance):
 
 class CpeImages(ResourceInstance):
     '''
+    .. _api cpe_images:
+
     CPE Images 
 
     Resource type name is **cpe_images**.
@@ -1845,6 +1893,8 @@ class CpeImages(ResourceInstance):
 
 class CustomerDevices(ResourceInstance):
     '''
+    .. _api customer_devices:
+
     Organization devices 
 
     Resource type name is **customer_devices**.
@@ -1920,6 +1970,8 @@ class CustomerDevices(ResourceInstance):
 
 class CustomerEmMeta(ResourceInstance):
     '''
+    .. _api customer_em_meta:
+
     Defines/retrieves expel.io customer_em_meta records 
 
     Resource type name is **customer_em_meta**.
@@ -1957,6 +2009,8 @@ class CustomerEmMeta(ResourceInstance):
 
 class CustomerList(ResourceInstance):
     '''
+    .. _api customer_list:
+
     Retrieves expel.io organization records for the organization view 
 
     Resource type name is **customer_list**.
@@ -2041,6 +2095,8 @@ class CustomerList(ResourceInstance):
 
 class CustomerResilienceActionGroups(ResourceInstance):
     '''
+    .. _api customer_resilience_action_groups:
+
     Defines/retrieves expel.io customer_resilience_action_group records 
 
     Resource type name is **customer_resilience_action_groups**.
@@ -2086,6 +2142,8 @@ class CustomerResilienceActionGroups(ResourceInstance):
 
 class CustomerResilienceActionList(ResourceInstance):
     '''
+    .. _api customer_resilience_action_list:
+
     Organization to resilience action list 
 
     Resource type name is **customer_resilience_action_list**.
@@ -2137,6 +2195,8 @@ class CustomerResilienceActionList(ResourceInstance):
 
 class CustomerResilienceActions(ResourceInstance):
     '''
+    .. _api customer_resilience_actions:
+
     Organization to resilience actions 
 
     Resource type name is **customer_resilience_actions**.
@@ -2204,6 +2264,8 @@ class CustomerResilienceActions(ResourceInstance):
 
 class Customers(ResourceInstance):
     '''
+    .. _api customers:
+
     Defines/retrieves expel.io customer records 
 
     Resource type name is **customers**.
@@ -2370,6 +2432,8 @@ class Customers(ResourceInstance):
 
 class EngagementManagers(ResourceInstance):
     '''
+    .. _api engagement_managers:
+
     Defines/retrieves expel.io engagement_manager records 
 
     Resource type name is **engagement_managers**.
@@ -2413,6 +2477,8 @@ class EngagementManagers(ResourceInstance):
 
 class ExpelAlertGrid(ResourceInstance):
     '''
+    .. _api expel_alert_grid:
+
     Elastic search backed Alert Grid 
 
     Resource type name is **expel_alert_grid**.
@@ -2540,6 +2606,8 @@ class ExpelAlertGrid(ResourceInstance):
 
 class ExpelAlertGridV2(ResourceInstance):
     '''
+    .. _api expel_alert_grid_v2:
+
     Elastic search backed Alert Grid 
 
     Resource type name is **expel_alert_grid_v2**.
@@ -2667,6 +2735,8 @@ class ExpelAlertGridV2(ResourceInstance):
 
 class ExpelAlertHistories(ResourceInstance):
     '''
+    .. _api expel_alert_histories:
+
     Expel alert histories 
 
     Resource type name is **expel_alert_histories**.
@@ -2710,6 +2780,8 @@ class ExpelAlertHistories(ResourceInstance):
 
 class ExpelAlertThresholdHistories(ResourceInstance):
     '''
+    .. _api expel_alert_threshold_histories:
+
     Defines/retrieves expel.io expel_alert_threshold_history records 
 
     Resource type name is **expel_alert_threshold_histories**.
@@ -2745,6 +2817,8 @@ class ExpelAlertThresholdHistories(ResourceInstance):
 
 class ExpelAlertThresholds(ResourceInstance):
     '''
+    .. _api expel_alert_thresholds:
+
     Defines/retrieves expel.io expel_alert_threshold records 
 
     Resource type name is **expel_alert_thresholds**.
@@ -2788,6 +2862,8 @@ class ExpelAlertThresholds(ResourceInstance):
 
 class ExpelAlerts(ResourceInstance):
     '''
+    .. _api expel_alerts:
+
     Expel alerts 
 
     Resource type name is **expel_alerts**.
@@ -2944,6 +3020,8 @@ class ExpelAlerts(ResourceInstance):
 
 class ExpelUsers(ResourceInstance):
     '''
+    .. _api expel_users:
+
     Expel users 
 
     Resource type name is **expel_users**.
@@ -3058,6 +3136,8 @@ class ExpelUsers(ResourceInstance):
 
 class Features(ResourceInstance):
     '''
+    .. _api features:
+
     Product features 
 
     Resource type name is **features**.
@@ -3099,6 +3179,8 @@ class Features(ResourceInstance):
 
 class Files(FilesResourceInstance):
     '''
+    .. _api files:
+
     File 
 
     Resource type name is **files**.
@@ -3154,6 +3236,8 @@ class Files(FilesResourceInstance):
 
 class Findings(ResourceInstance):
     '''
+    .. _api findings:
+
     Defines/retrieves expel.io finding records 
 
     Resource type name is **findings**.
@@ -3191,6 +3275,8 @@ class Findings(ResourceInstance):
 
 class HuntingResults(ResourceInstance):
     '''
+    .. _api hunting_results:
+
     Elastic search backed hunting results 
 
     Resource type name is **hunting_results**.
@@ -3835,6 +3921,8 @@ class HuntingResults(ResourceInstance):
 
 class Integrations(ResourceInstance):
     '''
+    .. _api integrations:
+
     Defines/retrieves expel.io integration records 
 
     Resource type name is **integrations**.
@@ -3893,6 +3981,8 @@ class Integrations(ResourceInstance):
 
 class InvestigationFindingHistories(ResourceInstance):
     '''
+    .. _api investigation_finding_histories:
+
     Defines/retrieves expel.io investigation_finding_history records 
 
     Resource type name is **investigation_finding_histories**.
@@ -3934,6 +4024,8 @@ class InvestigationFindingHistories(ResourceInstance):
 
 class InvestigationFindings(ResourceInstance):
     '''
+    .. _api investigation_findings:
+
     Investigation findings 
 
     Resource type name is **investigation_findings**.
@@ -3979,6 +4071,8 @@ class InvestigationFindings(ResourceInstance):
 
 class InvestigationHistories(ResourceInstance):
     '''
+    .. _api investigation_histories:
+
     Investigation histories 
 
     Resource type name is **investigation_histories**.
@@ -4022,6 +4116,8 @@ class InvestigationHistories(ResourceInstance):
 
 class InvestigationResilienceActionHints(ResourceInstance):
     '''
+    .. _api investigation_resilience_action_hints:
+
     Defines/retrieves expel.io investigation_organization_resilience_action_hint records 
 
     Resource type name is **investigation_resilience_action_hints**.
@@ -4044,6 +4140,8 @@ class InvestigationResilienceActionHints(ResourceInstance):
 
 class InvestigationResilienceActions(ResourceInstance):
     '''
+    .. _api investigation_resilience_actions:
+
     Investigation to resilience actions 
 
     Resource type name is **investigation_resilience_actions**.
@@ -4083,6 +4181,8 @@ class InvestigationResilienceActions(ResourceInstance):
 
 class Investigations(ResourceInstance):
     '''
+    .. _api investigations:
+
     Investigations 
 
     Resource type name is **investigations**.
@@ -4253,6 +4353,8 @@ class Investigations(ResourceInstance):
 
 class InvestigativeActionDataFileListing(ResourceInstance):
     '''
+    .. _api investigative_action_data_file_listing:
+
     Investigative action data for file_listing 
 
     Resource type name is **investigative_action_data_file_listing**.
@@ -4315,6 +4417,8 @@ class InvestigativeActionDataFileListing(ResourceInstance):
 
 class InvestigativeActionDataListSources(ResourceInstance):
     '''
+    .. _api investigative_action_data_list_sources:
+
     Investigative action data for list_sources 
 
     Resource type name is **investigative_action_data_list_sources**.
@@ -4352,6 +4456,8 @@ class InvestigativeActionDataListSources(ResourceInstance):
 
 class InvestigativeActionDataPersistenceListing(ResourceInstance):
     '''
+    .. _api investigative_action_data_persistence_listing:
+
     Investigative action data for persistence_listing 
 
     Resource type name is **investigative_action_data_persistence_listing**.
@@ -4420,6 +4526,8 @@ class InvestigativeActionDataPersistenceListing(ResourceInstance):
 
 class InvestigativeActionDataProcessListing(ResourceInstance):
     '''
+    .. _api investigative_action_data_process_listing:
+
     Investigative action data for process_listing 
 
     Resource type name is **investigative_action_data_process_listing**.
@@ -4473,6 +4581,8 @@ class InvestigativeActionDataProcessListing(ResourceInstance):
 
 class InvestigativeActionDataQueryCloudtrail(ResourceInstance):
     '''
+    .. _api investigative_action_data_query_cloudtrail:
+
     Investigative action data for query_cloudtrail 
 
     Resource type name is **investigative_action_data_query_cloudtrail**.
@@ -4568,6 +4678,8 @@ class InvestigativeActionDataQueryCloudtrail(ResourceInstance):
 
 class InvestigativeActionDataQueryDomain(ResourceInstance):
     '''
+    .. _api investigative_action_data_query_domain:
+
     Investigative action data for query_domain 
 
     Resource type name is **investigative_action_data_query_domain**.
@@ -4648,6 +4760,8 @@ class InvestigativeActionDataQueryDomain(ResourceInstance):
 
 class InvestigativeActionDataQueryFile(ResourceInstance):
     '''
+    .. _api investigative_action_data_query_file:
+
     Investigative action data for query_file 
 
     Resource type name is **investigative_action_data_query_file**.
@@ -4725,6 +4839,8 @@ class InvestigativeActionDataQueryFile(ResourceInstance):
 
 class InvestigativeActionDataQueryHost(ResourceInstance):
     '''
+    .. _api investigative_action_data_query_host:
+
     Investigative action data for query_host 
 
     Resource type name is **investigative_action_data_query_host**.
@@ -4814,6 +4930,8 @@ class InvestigativeActionDataQueryHost(ResourceInstance):
 
 class InvestigativeActionDataQueryIp(ResourceInstance):
     '''
+    .. _api investigative_action_data_query_ip:
+
     Investigative action data for query_ip 
 
     Resource type name is **investigative_action_data_query_ip**.
@@ -4909,6 +5027,8 @@ class InvestigativeActionDataQueryIp(ResourceInstance):
 
 class InvestigativeActionDataQueryLogs(ResourceInstance):
     '''
+    .. _api investigative_action_data_query_logs:
+
     Investigative action data for query_logs 
 
     Resource type name is **investigative_action_data_query_logs**.
@@ -4948,6 +5068,8 @@ class InvestigativeActionDataQueryLogs(ResourceInstance):
 
 class InvestigativeActionDataQueryNetflow(ResourceInstance):
     '''
+    .. _api investigative_action_data_query_netflow:
+
     Investigative action data for query_netflow 
 
     Resource type name is **investigative_action_data_query_netflow**.
@@ -5010,6 +5132,8 @@ class InvestigativeActionDataQueryNetflow(ResourceInstance):
 
 class InvestigativeActionDataQueryRawLogs(ResourceInstance):
     '''
+    .. _api investigative_action_data_query_raw_logs:
+
     Investigative action data for query_raw_logs 
 
     Resource type name is **investigative_action_data_query_raw_logs**.
@@ -5039,6 +5163,8 @@ class InvestigativeActionDataQueryRawLogs(ResourceInstance):
 
 class InvestigativeActionDataQueryUrl(ResourceInstance):
     '''
+    .. _api investigative_action_data_query_url:
+
     Investigative action data for query_url 
 
     Resource type name is **investigative_action_data_query_url**.
@@ -5116,6 +5242,8 @@ class InvestigativeActionDataQueryUrl(ResourceInstance):
 
 class InvestigativeActionDataQueryUser(ResourceInstance):
     '''
+    .. _api investigative_action_data_query_user:
+
     Investigative action data for query_user 
 
     Resource type name is **investigative_action_data_query_user**.
@@ -5199,6 +5327,8 @@ class InvestigativeActionDataQueryUser(ResourceInstance):
 
 class InvestigativeActionDataRegListing(ResourceInstance):
     '''
+    .. _api investigative_action_data_reg_listing:
+
     Investigative action data for reg_listing 
 
     Resource type name is **investigative_action_data_reg_listing**.
@@ -5238,6 +5368,8 @@ class InvestigativeActionDataRegListing(ResourceInstance):
 
 class InvestigativeActionDataTechniqueAnomalousProcessRelationships(ResourceInstance):
     '''
+    .. _api investigative_action_data_technique_anomalous_process_relationships:
+
     Investigative action data for technique_anomalous_process_relationships 
 
     Resource type name is **investigative_action_data_technique_anomalous_process_relationships**.
@@ -5300,6 +5432,8 @@ class InvestigativeActionDataTechniqueAnomalousProcessRelationships(ResourceInst
 
 class InvestigativeActionDataTechniqueDataCenterLogin(ResourceInstance):
     '''
+    .. _api investigative_action_data_technique_data_center_login:
+
     Investigative action data for technique_data_center_login 
 
     Resource type name is **investigative_action_data_technique_data_center_login**.
@@ -5398,6 +5532,8 @@ class InvestigativeActionDataTechniqueDataCenterLogin(ResourceInstance):
 
 class InvestigativeActionDataTechniqueExecutionFromUserDirectories(ResourceInstance):
     '''
+    .. _api investigative_action_data_technique_execution_from_user_directories:
+
     Investigative action data for technique_execution_from_user_directories 
 
     Resource type name is **investigative_action_data_technique_execution_from_user_directories**.
@@ -5481,6 +5617,8 @@ class InvestigativeActionDataTechniqueExecutionFromUserDirectories(ResourceInsta
 
 class InvestigativeActionDataTechniqueFailedApiRequests(ResourceInstance):
     '''
+    .. _api investigative_action_data_technique_failed_api_requests:
+
     Investigative action data for technique_failed_api_requests 
 
     Resource type name is **investigative_action_data_technique_failed_api_requests**.
@@ -5520,6 +5658,8 @@ class InvestigativeActionDataTechniqueFailedApiRequests(ResourceInstance):
 
 class InvestigativeActionDataTechniqueFailedC2Connections(ResourceInstance):
     '''
+    .. _api investigative_action_data_technique_failed_c_2_connections:
+
     Investigative action data for technique_failed_c2_connections 
 
     Resource type name is **investigative_action_data_technique_failed_c_2_connections**.
@@ -5615,6 +5755,8 @@ class InvestigativeActionDataTechniqueFailedC2Connections(ResourceInstance):
 
 class InvestigativeActionDataTechniqueHistoricalScriptInterpreterActivity(ResourceInstance):
     '''
+    .. _api investigative_action_data_technique_historical_script_interpreter_activity:
+
     Investigative action data for technique_historical_script_interpreter_activity 
 
     Resource type name is **investigative_action_data_technique_historical_script_interpreter_activity**.
@@ -5689,6 +5831,8 @@ class InvestigativeActionDataTechniqueHistoricalScriptInterpreterActivity(Resour
 
 class InvestigativeActionDataTechniqueHttpBeaconing(ResourceInstance):
     '''
+    .. _api investigative_action_data_technique_http_beaconing:
+
     Investigative action data for technique_http_beaconing 
 
     Resource type name is **investigative_action_data_technique_http_beaconing**.
@@ -5826,6 +5970,8 @@ class InvestigativeActionDataTechniqueHttpBeaconing(ResourceInstance):
 
 class InvestigativeActionDataTechniqueLegitimateServicesForCommandAndControl(ResourceInstance):
     '''
+    .. _api investigative_action_data_technique_legitimate_services_for_command_and_control:
+
     Investigative action data for technique_legitimate_services_for_command-and-control 
 
     Resource type name is **investigative_action_data_technique_legitimate_services_for_command_and_control**.
@@ -5912,6 +6058,8 @@ class InvestigativeActionDataTechniqueLegitimateServicesForCommandAndControl(Res
 
 class InvestigativeActionDataTechniqueLoginGeoInfeasibility(ResourceInstance):
     '''
+    .. _api investigative_action_data_technique_login_geo_infeasibility:
+
     Investigative action data for technique_login_geo-infeasibility 
 
     Resource type name is **investigative_action_data_technique_login_geo_infeasibility**.
@@ -6082,6 +6230,8 @@ class InvestigativeActionDataTechniqueLoginGeoInfeasibility(ResourceInstance):
 
 class InvestigativeActionDataTechniqueRdpConnectionAnomalies(ResourceInstance):
     '''
+    .. _api investigative_action_data_technique_rdp_connection_anomalies:
+
     Investigative action data for technique_rdp_connection_anomalies 
 
     Resource type name is **investigative_action_data_technique_rdp_connection_anomalies**.
@@ -6216,6 +6366,8 @@ class InvestigativeActionDataTechniqueRdpConnectionAnomalies(ResourceInstance):
 
 class InvestigativeActionDataTechniqueScheduledTasks(ResourceInstance):
     '''
+    .. _api investigative_action_data_technique_scheduled_tasks:
+
     Investigative action data for technique_scheduled_tasks 
 
     Resource type name is **investigative_action_data_technique_scheduled_tasks**.
@@ -6255,6 +6407,8 @@ class InvestigativeActionDataTechniqueScheduledTasks(ResourceInstance):
 
 class InvestigativeActionDataTechniqueSinkholeConnections(ResourceInstance):
     '''
+    .. _api investigative_action_data_technique_sinkhole_connections:
+
     Investigative action data for technique_sinkhole_connections 
 
     Resource type name is **investigative_action_data_technique_sinkhole_connections**.
@@ -6356,6 +6510,8 @@ class InvestigativeActionDataTechniqueSinkholeConnections(ResourceInstance):
 
 class InvestigativeActionDataTechniqueSuccessiveReconnaissanceCommands(ResourceInstance):
     '''
+    .. _api investigative_action_data_technique_successive_reconnaissance_commands:
+
     Investigative action data for technique_successive_reconnaissance_commands 
 
     Resource type name is **investigative_action_data_technique_successive_reconnaissance_commands**.
@@ -6421,6 +6577,8 @@ class InvestigativeActionDataTechniqueSuccessiveReconnaissanceCommands(ResourceI
 
 class InvestigativeActionHistories(ResourceInstance):
     '''
+    .. _api investigative_action_histories:
+
     Investigative action histories 
 
     Resource type name is **investigative_action_histories**.
@@ -6464,6 +6622,8 @@ class InvestigativeActionHistories(ResourceInstance):
 
 class InvestigativeActions(InvestigativeActionsResourceInstance):
     '''
+    .. _api investigative_actions:
+
     investigative actions 
 
     Resource type name is **investigative_actions**.
@@ -6584,6 +6744,8 @@ class InvestigativeActions(InvestigativeActionsResourceInstance):
 
 class IpAddresses(ResourceInstance):
     '''
+    .. _api ip_addresses:
+
     IP addresses 
 
     Resource type name is **ip_addresses**.
@@ -6631,6 +6793,8 @@ class IpAddresses(ResourceInstance):
 
 class NistCategories(ResourceInstance):
     '''
+    .. _api nist_categories:
+
     Defines/retrieves expel.io nist_category records 
 
     Resource type name is **nist_categories**.
@@ -6672,6 +6836,8 @@ class NistCategories(ResourceInstance):
 
 class NistSubcategories(ResourceInstance):
     '''
+    .. _api nist_subcategories:
+
     Defines/retrieves expel.io nist_subcategory records 
 
     Resource type name is **nist_subcategories**.
@@ -6713,6 +6879,8 @@ class NistSubcategories(ResourceInstance):
 
 class NistSubcategoryScoreHistories(ResourceInstance):
     '''
+    .. _api nist_subcategory_score_histories:
+
     NIST Subcategory Score History 
 
     Resource type name is **nist_subcategory_score_histories**.
@@ -6752,6 +6920,8 @@ class NistSubcategoryScoreHistories(ResourceInstance):
 
 class NistSubcategoryScores(ResourceInstance):
     '''
+    .. _api nist_subcategory_scores:
+
     Latest NIST subcategory scores 
 
     Resource type name is **nist_subcategory_scores**.
@@ -6822,6 +6992,8 @@ class NistSubcategoryScores(ResourceInstance):
 
 class NotificationPreferences(ResourceInstance):
     '''
+    .. _api notification_preferences:
+
     User Notification Preferences 
 
     Resource type name is **notification_preferences**.
@@ -6851,6 +7023,8 @@ class NotificationPreferences(ResourceInstance):
 
 class OrganizationEmMeta(ResourceInstance):
     '''
+    .. _api organization_em_meta:
+
     Defines/retrieves expel.io organization_em_meta records 
 
     Resource type name is **organization_em_meta**.
@@ -6888,6 +7062,8 @@ class OrganizationEmMeta(ResourceInstance):
 
 class OrganizationList(ResourceInstance):
     '''
+    .. _api organization_list:
+
     Retrieves expel.io organization records for the organization view 
 
     Resource type name is **organization_list**.
@@ -6978,6 +7154,8 @@ class OrganizationList(ResourceInstance):
 
 class OrganizationResilienceActionGroups(ResourceInstance):
     '''
+    .. _api organization_resilience_action_groups:
+
     Defines/retrieves expel.io organization_resilience_action_group records 
 
     Resource type name is **organization_resilience_action_groups**.
@@ -7023,6 +7201,8 @@ class OrganizationResilienceActionGroups(ResourceInstance):
 
 class OrganizationResilienceActionList(ResourceInstance):
     '''
+    .. _api organization_resilience_action_list:
+
     Organization to resilience action list 
 
     Resource type name is **organization_resilience_action_list**.
@@ -7072,6 +7252,8 @@ class OrganizationResilienceActionList(ResourceInstance):
 
 class OrganizationResilienceActions(ResourceInstance):
     '''
+    .. _api organization_resilience_actions:
+
     Organization to resilience actions 
 
     Resource type name is **organization_resilience_actions**.
@@ -7141,6 +7323,8 @@ class OrganizationResilienceActions(ResourceInstance):
 
 class OrganizationStatuses(ResourceInstance):
     '''
+    .. _api organization_statuses:
+
     Organization status 
 
     Resource type name is **organization_statuses**.
@@ -7180,6 +7364,8 @@ class OrganizationStatuses(ResourceInstance):
 
 class Organizations(ResourceInstance):
     '''
+    .. _api organizations:
+
     Defines/retrieves expel.io organization records 
 
     Resource type name is **organizations**.
@@ -7362,6 +7548,8 @@ class Organizations(ResourceInstance):
 
 class PhishingSubmissionAttachments(ResourceInstance):
     '''
+    .. _api phishing_submission_attachments:
+
     Phishing submission attachments 
 
     Resource type name is **phishing_submission_attachments**.
@@ -7401,6 +7589,8 @@ class PhishingSubmissionAttachments(ResourceInstance):
 
 class PhishingSubmissionDomains(ResourceInstance):
     '''
+    .. _api phishing_submission_domains:
+
     Phishing submission domains 
 
     Resource type name is **phishing_submission_domains**.
@@ -7432,6 +7622,8 @@ class PhishingSubmissionDomains(ResourceInstance):
 
 class PhishingSubmissionHeaders(ResourceInstance):
     '''
+    .. _api phishing_submission_headers:
+
     Phishing submission headers 
 
     Resource type name is **phishing_submission_headers**.
@@ -7465,6 +7657,8 @@ class PhishingSubmissionHeaders(ResourceInstance):
 
 class PhishingSubmissionUrls(ResourceInstance):
     '''
+    .. _api phishing_submission_urls:
+
     Phishing submission URLs 
 
     Resource type name is **phishing_submission_urls**.
@@ -7498,6 +7692,8 @@ class PhishingSubmissionUrls(ResourceInstance):
 
 class PhishingSubmissions(ResourceInstance):
     '''
+    .. _api phishing_submissions:
+
     Phishing submissions 
 
     Resource type name is **phishing_submissions**.
@@ -7581,6 +7777,8 @@ class PhishingSubmissions(ResourceInstance):
 
 class Products(ResourceInstance):
     '''
+    .. _api products:
+
     Products 
 
     Resource type name is **products**.
@@ -7624,6 +7822,8 @@ class Products(ResourceInstance):
 
 class RemediationActionAssetHistories(ResourceInstance):
     '''
+    .. _api remediation_action_asset_histories:
+
     Remediation action asset histories 
 
     Resource type name is **remediation_action_asset_histories**.
@@ -7663,6 +7863,8 @@ class RemediationActionAssetHistories(ResourceInstance):
 
 class RemediationActionAssets(ResourceInstance):
     '''
+    .. _api remediation_action_assets:
+
     Remediation action assets 
 
     Resource type name is **remediation_action_assets**.
@@ -7710,6 +7912,8 @@ class RemediationActionAssets(ResourceInstance):
 
 class RemediationActionHistories(ResourceInstance):
     '''
+    .. _api remediation_action_histories:
+
     Remediation action histories 
 
     Resource type name is **remediation_action_histories**.
@@ -7751,6 +7955,8 @@ class RemediationActionHistories(ResourceInstance):
 
 class RemediationActions(ResourceInstance):
     '''
+    .. _api remediation_actions:
+
     Remediation actions 
 
     Resource type name is **remediation_actions**.
@@ -7826,6 +8032,8 @@ class RemediationActions(ResourceInstance):
 
 class ResilienceActionGroups(ResourceInstance):
     '''
+    .. _api resilience_action_groups:
+
     Defines/retrieves expel.io resilience_action_group records 
 
     Resource type name is **resilience_action_groups**.
@@ -7865,6 +8073,8 @@ class ResilienceActionGroups(ResourceInstance):
 
 class ResilienceActionInvestigationProperties(ResourceInstance):
     '''
+    .. _api resilience_action_investigation_properties:
+
     Defines/retrieves expel.io resilience_action_investigation_property records 
 
     Resource type name is **resilience_action_investigation_properties**.
@@ -7904,6 +8114,8 @@ class ResilienceActionInvestigationProperties(ResourceInstance):
 
 class ResilienceActions(ResourceInstance):
     '''
+    .. _api resilience_actions:
+
     Resilience actions 
 
     Resource type name is **resilience_actions**.
@@ -7949,6 +8161,8 @@ class ResilienceActions(ResourceInstance):
 
 class SamlIdentityProviders(ResourceInstance):
     '''
+    .. _api saml_identity_providers:
+
     SAML Identity Providers 
 
     Resource type name is **saml_identity_providers**.
@@ -7984,6 +8198,8 @@ class SamlIdentityProviders(ResourceInstance):
 
 class Secrets(ResourceInstance):
     '''
+    .. _api secrets:
+
     Organization secrets. Note - these requests must be in the format of `/secrets/security_device-<guid>` 
 
     Resource type name is **secrets**.
@@ -8017,6 +8233,8 @@ class Secrets(ResourceInstance):
 
 class SecurityDevices(ResourceInstance):
     '''
+    .. _api security_devices:
+
     Security devices 
 
     Resource type name is **security_devices**.
@@ -8100,6 +8318,8 @@ class SecurityDevices(ResourceInstance):
 
 class TimelineEntries(ResourceInstance):
     '''
+    .. _api timeline_entries:
+
     Timeline Entries 
 
     Resource type name is **timeline_entries**.
@@ -8169,6 +8389,8 @@ class TimelineEntries(ResourceInstance):
 
 class UserAccountRoles(ResourceInstance):
     '''
+    .. _api user_account_roles:
+
     Defines/retrieves expel.io user_account_role records 
 
     Resource type name is **user_account_roles**.
@@ -8212,6 +8434,8 @@ class UserAccountRoles(ResourceInstance):
 
 class UserAccountStatuses(ResourceInstance):
     '''
+    .. _api user_account_statuses:
+
     User account status 
 
     Resource type name is **user_account_statuses**.
@@ -8265,6 +8489,8 @@ class UserAccountStatuses(ResourceInstance):
 
 class UserAccounts(ResourceInstance):
     '''
+    .. _api user_accounts:
+
     User accounts 
 
     Resource type name is **user_accounts**.
@@ -8382,6 +8608,8 @@ class UserAccounts(ResourceInstance):
 
 class VendorAlertEvidences(ResourceInstance):
     '''
+    .. _api vendor_alert_evidences:
+
     Vendor alert evidences are extracted from a vendor alert's evidence summary 
 
     Resource type name is **vendor_alert_evidences**.
@@ -8415,6 +8643,8 @@ class VendorAlertEvidences(ResourceInstance):
 
 class VendorAlerts(ResourceInstance):
     '''
+    .. _api vendor_alerts:
+
     Vendor alerts 
 
     Resource type name is **vendor_alerts**.
@@ -8505,6 +8735,8 @@ class VendorAlerts(ResourceInstance):
 
 class VendorDevices(ResourceInstance):
     '''
+    .. _api vendor_devices:
+
     Vendor devices 
 
     Resource type name is **vendor_devices**.
@@ -8590,6 +8822,8 @@ class VendorDevices(ResourceInstance):
 
 class Vendors(ResourceInstance):
     '''
+    .. _api vendors:
+
     Vendors 
 
     Resource type name is **vendors**.

@@ -1,13 +1,5 @@
 .. _usecases:
 
-Example use cases
-=================
-
-This section outlines very common use cases we’ve heard about from customers wanting to further integrate with our platform. There are three types of examples documented in this section.
-
-1. Snippet -- This is code self contained in the documentation. Usually just a few lines.
-2. Script -- This is a whole python script that accomplishes the use cases. A brief description on each script is provided. The scripts themselves are in examples/ directory. 
-3. Notebook - A jupyter notebook that implements, mostly experimental concepts that forward leaning customers might be interested in. 
 
 .. _snippet auth:
    
@@ -92,223 +84,169 @@ Before starting an investigative action, it is sometimes helpful to look up the 
     query_domain_devices = get_query_domain_devices(xc)
 
 
+.. _snippet list investigations:
 
-Example 2: List All Vendors 
--------------------------------------------------
+Snippet: Listing investigations 
+-------------------------------
 
-List all the vendor names, that Expel currently integrates with.
-
-.. code-block:: python
-
-    x = XClient.workbench('https://workbench.expel.io', apikey='1b88d7b9-d22d-4f78-a94a-9da05ab94a81')
-    for vendor in x.vendors:
-        print(vendor.name)
-
-
-Example 3: Listing investigations by customer 
--------------------------------------------------
-
-Iterate over all the investigations for a specific customer and count the number investigations, and incidents that customer has.
-
-
-.. code-block:: python
-
-    x = XClient.workbench('https://workbench.expel.io', apikey='1b88d7b9-d22d-4f78-a94a-9da05ab94a81')
-    # Count all investigations a customer has, and number of incidents
-    inc_count = 0 # Incident count
-    inv_count = 0 # Investigation Count
-    for inv in x.investigations.filter_by(customer_id='c2510e19-be36-4fbd-9567-b625d57c720f'):
-        if inv.is_incident:
-            inc_count += 1
-        else:
-            inv_count += 1
-
-    print("There were %d incidents, and %d investigations" % (inc_count, inv_count))
+Iterate over all the investigations and print their status.
 
 
 
-Example 4: Listing Investigative Actions by Customer/Type 
-----------------------------------------------------------
+.. _snippet list comments:
+
+Snippet: List comments 
+----------------------
+
+List all comments
+
+.. _snippet create comment:
+
+Snippet: create comment
+-----------------------
+
+Create a comment
+
+
+Snippet: Listing Investigative Actions
+--------------------------------------
 
 There are two ways to list investigative actions by customer, and subsequently filtering on type.
 
-.. code-block:: python
-
-    x = XClient.workbench('https://workbench.expel.io', apikey='1b88d7b9-d22d-4f78-a94a-9da05ab94a81')
-
-    man_cnt = 0
-    wb_cnt = 0
-    for inv in x.investigations.filter_by(customer_id='c2510e19-be36-4fbd-9567-b625d57c720f'):
-        for act in x.investigative_actions.filter_by(investigation_id=inv.id):
-            if act.action_type == 'MANUAL':
-                man_cnt +=1
-            else:
-                wb_cnt += 1
-
-    print("There were %d manual investigative actions, and %d workbench investigative actions" % (man_cnt, wb_cnt))
 
 Or you can do this to just filter on MANUAL for example.
 
-.. code-block:: python
-
-    x = XClient.workbench('https://workbench.expel.io', apikey='1b88d7b9-d22d-4f78-a94a-9da05ab94a81')
-
-    man_cnt = 0
-    for inv in x.investigations.filter_by(customer_id='c2510e19-be36-4fbd-9567-b625d57c720f'):
-        for act in x.investigative_actions.filter_by(action_type='MANUAL', investigation_id=inv.id):
-            man_cnt +=1
-
-    print("There were %d manual investigative actions" % man_cnt)
 
 
-Example 5: Find top Investigative Actions 
--------------------------------------------------
+
+.. _snippet top investigative actions:
+
+Snippet: Find top Investigative Actions 
+---------------------------------------
 
 Find the top 10 investigative actions by number of times they are issued.
 
-.. code-block:: python
 
-    x = XClient.workbench('https://workbench.expel.io', apikey='1b88d7b9-d22d-4f78-a94a-9da05ab94a81')
-    stats = defaultdict(int)
-    for act in x.investigative_actions:
-        stats[act.title] += 1
+.. _snippet create investigation:
 
-    i = 0
-    for title, cnt in sorted(stats.items(), key=lambda x: x[1], reverse=True):
-        print("Top investigative actions %s => %d" % (title,cnt))
-        i+=1
-        if i > 10:
-            break
-
-
-
-Example 6: Creating new investigation 
--------------------------------------------------
+Snippet: Creating new investigation 
+-----------------------------------
 
 Create a new investigation in Workbench.
 
-.. code-block:: python
-
-    x = XClient.workbench('https://workbench.expel.io', apikey='1b88d7b9-d22d-4f78-a94a-9da05ab94a81')
-    i = x.investigations.create(title='Investigative Title', relationship_customer='c2510e19-be36-4fbd-9567-b625d57c720f', relationship_assigned_to_actor='c2510e19-be36-4fbd-9567-b625d57c720f')
-    i.save()
-
 Or 
 
-.. code-block:: python
+.. _snippet list open investigations:
 
-    x = XClient.workbench('https://workbench.expel.io', apikey='1b88d7b9-d22d-4f78-a94a-9da05ab94a81')
-    i = x.investigations.create(title='Investigation Title')
-    i.relationship.customer = CUSTOMER_GUID
-    i.relationship.assigned_to_actor = CUSTOMER_GUID
-    i.save()
+Snippet: List open investigation 
+--------------------------------
 
+List open investigations in Workbench.
 
 
-Example 7: Creating new findings 
--------------------------------------------------
+
+.. _snippet close investigation:
+
+Snippet: Close an investigation 
+-------------------------------
+
+Update an investigation’s state by closing it.
+
+
+
+
+.. _snippet create investigation findings:
+
+Snippet: Creating investigation findings 
+----------------------------------------
 
 Create new findings text for an investigation.
 
 
-.. code-block:: python
+.. _snippet modify investigation findings:
 
-    x = XClient.workbench('https://workbench.expel.io', apikey='1b88d7b9-d22d-4f78-a94a-9da05ab94a81')
-    i = x.investigations.create(title='Investigative Title', relationship_customer='c2510e19-be36-4fbd-9567-b625d57c720f', relationship_assigned_to_actor='c2510e19-be36-4fbd-9567-b625d57c720f')
-    i.save()
+Snippet: Modify investigation findings 
+--------------------------------------
 
-    f = x.investigation_findings.create(title='What is it?', finding='It is malware.', relationship_investigation=i.id)
-    f.save()
+Modify findings text for an investigation.
 
 
-Example 8: Modifying findings 
+
+.. _snippet create auto investigative action:
+
+Snippet: Create an investigative action and poll for completion
+---------------------------------------------------------------
+
+Create "auto" investigative actions, using our tasking framework. This example will use the Query Logs investigative action. After creating the investigative action shows how to download the results. Assumes the results completed. Requires knowing the following values: - Investigation ID - A user ID, can also use customer ID in place of a specific user - Vendor device ID to task - Input arguments to the "task" defined per capability - Query that is specific to the SIEM we are talking too. This example works on Sumo Logic.
+
+
+
+.. _snippet upload investigative data:
+
+Snippet: Upload investigative data 
+----------------------------------
+
+While uncommon, it can happen that a customer has access to logs or data that we don’t. In that case it’s important Expel gain access to that data to help complete an investigation. In this example we’ll show how you can upload arbitrary data associated with an investigation.
+
+
+.. _snippet return investigations closed as pup:
+
+Snippet: Return investigations closed as PUP/PUA 
+------------------------------------------------
+
+Investigation close decisions can be helpful to identify certain types of investigations or incidents identified in your organization. This example will find investigations with a close decision of PUP/PUA.
+
+.. _snippet interact hunt investigation:
+
+Snippet: Interacting with Expel hunting investigations
+------------------------------------------------------
+Note: Hunting investigations are specific to the Expel Hunting service and available to those who have purchased this option. 
+
+.. _snippet device name to device id:
+
+Snippet: Return device name of security device ID
 -------------------------------------------------
+Working with identifiers can be helpful, but also hard to mentally keep track of at times. This example is a simple function to return the human readable name of a security device ID
 
-Modify existing findings text for an investigation.
+.. _snippet devices specific action:
 
+Snippet: Return devices with a specific investigative action support
+--------------------------------------------------------------------
+Before starting an investigative action, it is sometimes helpful to look up the capabilities of your onboarded devices to make sure you have a device that supports a particular investigative action. This example will use Capabilities to look for `ENDPOINT` devices, such as EDR or antivirus devices, that support the Query Domain capability.
 
-.. code-block:: python
+.. _snippet close remediation action:
 
-    x = XClient.workbench('https://workbench.expel.io', apikey='1b88d7b9-d22d-4f78-a94a-9da05ab94a81')
-    i = x.investigations.create(title='Investigative Title', relationship_customer='c2510e19-be36-4fbd-9567-b625d57c720f', relationship_assigned_to_actor='c2510e19-be36-4fbd-9567-b625d57c720f')
-    i.save()
+Snippet: Close a remediation action as completed
+------------------------------------------------
+Update a remediation action as completed, and close it in Expel Workbench.
+<snippet>
 
-    f = x.investigation_findings.create(title='What is it?', finding='It is malware.', relationship_investigation=i.id)
-    f.save()
+.. _script list all ips:
 
-    for f in inv.findings:
-        if f.title == 'What is it?':
-            with x.investigation_findings.get(id=f.id) as f1:
-                f1.finding = 'foo bar baz'
-                f1.save()
+Script: List all Destination IPs from Expel Alerts
+--------------------------------------------------
+There’s a fully documented script located in examples/list_dest_ip.py. This script will write a CSV containing timestamp of alert, expel alert name, security device and destination ip for all Expel alerts in the past year. 
 
-Example 9: Create auto investigative actions (Query User) 
------------------------------------------------------------
+.. _script poll for ransomware:
 
-Create "auto" investigative actions, using our tasking framework. This example will use the Query User investigative action.
-Requires knowing the following values:
-- Investigation ID
-- A user ID, can also use customer ID in place of a specific user
-- Vendor device ID to task
-- Input arguments to the "task" defined per capability 
+Script: Poll for ransomware Incidents
+-------------------------------------
+There’s a fully documented script located in examples/poll_ransomware_incidents.py. This script will poll Expel Workbench for any incidents created in the past five minutes that involved ransomware. The script will extract the asset ID (if provided by the EDR) and print that to screen. It’s the starting point for customers who are interested in SOAR integration. 
 
+.. _script bidirectional jira:
 
-.. code-block:: python
+Script: Bi-Directional State (JIRA)
+-----------------------------------
+This script will sync state between JIRA tickets and Expel Workbench. It’ll sync the following to JIRA from Expel Workbench:
 
-    x = XClient.workbench('https://workbench.expel.io', apikey='1b88d7b9-d22d-4f78-a94a-9da05ab94a81')
-    input_args = {'user_name': 'matt.peters@expel.io', 'time_range_start':'2019-01-30T14:00:40Z', 'time_range_end':'2019-01-30T14:45:40Z'}
-    inv_act = x.create_auto_inv_action(customer_id, investigation_id, vendor_device_id, customer_id, 'query_user', input_args, 'Title of Inv Action', 'Reason for Inv Action') 
-    print("Investigative Action ID: ", inv_act.id)
+* Investigative Actions details and outcome as sub tasks
+* Investigation description, lead alert
+* Investigative comments
+* Incident findings
+* Investigation status closed/opened
 
-Example 10: Create auto investigative actions (Query Logs) and download results
----------------------------------------------------------------------------------
+It’ll sync to Workbench:
 
-Create "auto" investigative actions, using our tasking framework. This example will use the Query Logs investigative action. After creating the investigative action shows how to download the results. Assumes the results completed..
-Requires knowing the following values:
-- Investigation ID
-- A user ID, can also use customer ID in place of a specific user
-- Vendor device ID to task
-- Input arguments to the "task" defined per capability 
-- Query that is specific to the SIEM we are talking too. This example works on Sumo Logic.
-
-
-.. code-block:: python
-
-    x = XClient.workbench('https://workbench.expel.io', apikey='1b88d7b9-d22d-4f78-a94a-9da05ab94a81')
-    query = '_sourcecategory = "prod/cloud/skyformation" | parse "\\"email\\":\\"*\\"" as email'
-    input_args = {'query': query, 'start_time':'2019-01-30T14:00:40Z', 'end_time':'2019-01-30T14:45:40Z'}
-
-    inv_act = x.create_auto_inv_action(customer_guid, inv_guid, device_guid, me_guid, 'query_logs', input_args, 'raw query logs', 'testing one more example') 
-    print("Investigative Action ID: ", inv_act.id)
-
-    # NOTE: Need to wait or check on status before trying to download.
-    with x.investigative_actions.get(id=inv_id) as ia:
-        fd = tempfile.NamedTemporaryFile(delete=False)
-        ia.download(fd)
-        fd.seek(0)
-        pprint.pprint(json.loads(fd.read()))
- 
-
-
-Example 11: Create, Upload data, and close a manual investigative action 
---------------------------------------------------------------------------
-
-Create "manual" investigative actions. This means the investigative action is not backed by tasks. Upload some data associated with the manual action and then close the manual investigative action specifying some outcome.
-
-
-.. code-block:: python
-
-    x = XClient.workbench('https://workbench.expel.io', apikey='1b88d7b9-d22d-4f78-a94a-9da05ab94a81')
-    inv_act = x.create_manual_inv_action(customer_id, investigation_id, created_by_id,  'title manual 1', 'reason manual 1', 'instructions 1') 
-    print("Investigative Action ID: ", inv_act.id)
-    inv_act.upload('file.ext', b'raw bytes')
-
-    # TODO show example uploading results (backed by a file to manual action)
-
-    # Context handler will "patch" changes after we exit.. pretty nifty!
-    with x.investigative_actions.get(id=inv_id) as ia:
-        ia.results = 'i m done here, *this is markdown bold*'
-        ia.status = 'COMPLETED'
-
-
+* Investigative comments
+* Ticket status closed/open
 
