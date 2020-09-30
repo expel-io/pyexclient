@@ -20,13 +20,13 @@ There are two ways to authenticate to Expel Workbench. The first is as a user wi
     print("2FA Code:")
     code = input()
 
-    x = WorkbenchClient('https://workbench.expel.io', username=username, password=password, mfa_code=code)
+    xc = WorkbenchClient('https://workbench.expel.io', username=username, password=password, mfa_code=code)
 
 To authenticate with an api key:
 
 .. code-block:: python
 
-    x = WorkbenchClient('https://workbench.expel.io', apikey='apikey')
+    xc = WorkbenchClient('https://workbench.expel.io', apikey='apikey')
 
 .. _snippet list remediation:
 
