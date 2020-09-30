@@ -9370,21 +9370,17 @@ class WorkbenchClient(WorkbenchCoreClient):
 
         return ia.save()
 
-    def create_auto_inv_action(self, customer_id: str, vendor_device_id: str, created_by_id: str, capability_name: str, input_args: dict, title: str, reason: str, investigation_id: str = None, expel_alert_id: str = None):
+    def create_auto_inv_action(self, vendor_device_id: str, capability_name: str, input_args: dict, title: str, reason: str, investigation_id: str = None, expel_alert_id: str = None):
         '''
         Create an automatic investigative action.
 
 
-        :param customer_id: The customer ID
-        :type customer_id: str
         :param investigation_id: The investigation ID to associate the action with.
         :type investigation_id: str
         :param expel_alert_id: The expel alert id
         :type expel_alert_id: str
         :param vendor_device_id: The vendor device ID, to dispatch the task against.
         :type vendor_device_id: str
-        :param created_by_id: The user ID that created the action
-        :type created_by_id: str
         :param capability_name: The name of the capability we are running. Defined in classes https://github.com/expel-io/taskabilities/tree/master/py/taskabilities/cpe/capabilities, look at name class variable.
         :type capability_name: str
         :param input_args: The input arguments to the capability to run. Defined in classes https://github.com/expel-io/taskabilities/tree/master/py/taskabilities/cpe/capabilities, look at name class variable.
@@ -9399,7 +9395,7 @@ class WorkbenchClient(WorkbenchCoreClient):
         Examples:
             >>> xc = XClient.workbench('https://workbench.expel.io', username=username, password=password, mfa_code=mfa_code)
             >>> input_args = &#123;"user_name": 'matt.peters@expel.io', 'time_range_start':'2019-01-30T14:00:40Z', 'time_range_end':'2019-01-30T14:45:40Z'&#125;
-            >>> o = xc.create_auto_inv_action(customer_guid, inv_guid, device_guid, user_guid, 'query_user', input_args, 'Query User', 'Getting user login activity to determine if login is normal')
+            >>> o = xc.create_auto_inv_action(inv_guid, device_guid, 'query_user', input_args, 'Query User', 'Getting user login activity to determine if login is normal')
             >>> print("Investigative Action ID: ", o.id)
         '''
         if not expel_alert_id and not investigation_id:
@@ -9419,17 +9415,14 @@ class WorkbenchClient(WorkbenchCoreClient):
             ia.relationship.expel_alert = expel_alert_id
         return ia.save()
 
-    def capabilities(self, customer_id: str):
+    def capabilities(self):
         '''
-        Get a list of capabilities for a given customer.
-
-        :param customer_id: The customer ID
-        :type customer_id: str
+        Get a list of capabilities available based on onboarded devices.
 
         Examples:
-            >>> xc.workbench.capabilities("my-customer-guid-123")
+            >>> xc.workbench.capabilities()
         '''
-        resp = self.request('get', '/api/v2/capabilities/%s' % customer_id)
+        resp = self.request('get', '/api/v2/capabilities')
         return resp.json()
 
     def plugins(self):
