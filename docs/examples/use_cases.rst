@@ -245,7 +245,7 @@ Create "auto" investigative actions, using our tasking framework. This example w
 
         )
 
-        while action.status != 'RUNNING':
+        while action.status == 'RUNNING':
             print("Waiting for results...")
             time.sleep(3)
             action = xc.workbench.investigative_actions.get(id=action.id)
