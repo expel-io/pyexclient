@@ -8096,13 +8096,8 @@ class WorkbenchClient(WorkbenchCoreClient):
 
         Examples:
             >>> xc = XClient.workbench('https://workbench.expel.io', username=username, password=password, mfa_code=mfa_code)
-<<<<<<< HEAD
-            >>> input_args = &#123;"user_name": 'matt.peters@expel.io', 'time_range_start':'2019-01-30T14:00:40Z', 'time_range_end':'2019-01-30T14:45:40Z'&#125;
-            >>> o = xc.create_auto_inv_action(inv_guid, device_guid, 'query_user', input_args, 'Query User', 'Getting user login activity to determine if login is normal')
-=======
             >>> input_args = &#123;"user_name": 'willy.wonka@expel.io', 'time_range_start':'2019-01-30T14:00:40Z', 'time_range_end':'2019-01-30T14:45:40Z'&#125;
-            >>> o = xc.create_auto_inv_action(customer_guid, inv_guid, device_guid, user_guid, 'query_user', input_args, 'Query User', 'Getting user login activity to determine if login is normal')
->>>>>>> f06dc922fe5a5ad327579e3476ad5f62a05a278c
+            >>> o = xc.create_auto_inv_action(inv_guid, device_guid, 'query_user', input_args, 'Query User', 'Getting user login activity to determine if login is normal')
             >>> print("Investigative Action ID: ", o.id)
         '''
         if not expel_alert_id and not investigation_id:

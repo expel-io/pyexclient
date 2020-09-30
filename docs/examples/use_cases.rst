@@ -11,6 +11,8 @@ There are two ways to authenticate to Expel Workbench. The first is as a user wi
 .. code-block:: python
 
     import getpass
+    from pyexclient import WorkbenchClient
+
     print("Enter Username:")
     username = input()
     print("Enter Password:")
@@ -19,8 +21,6 @@ There are two ways to authenticate to Expel Workbench. The first is as a user wi
     code = input()
 
     x = WorkbenchClient('https://workbench.expel.io', username=username, password=password, mfa_code=code)
-    for vendor in x.vendors:
-        print(vendor.name)
 
 To authenticate with an api key:
 
@@ -52,13 +52,13 @@ Working with identifiers can be helpful, but also hard to mentally keep track of
 .. code-block:: python
 
     def security_device_to_name(xc, device_id):
-        device = xc.workbench.security_devices.get(id=device_id)
+        device = xc.security_devices.get(id=device_id)
         if device:
             return device.name
         return None
 
-    device_id = "device-id-here"
-    device_name = security_device_to_name(device_id)
+    device_id = "158b031d-87f8-4c42-80ee-f9fb15796360"
+    device_name = security_device_to_name(xc, device_id)
 
 .. _snippet investigative action query domain:
 
@@ -69,7 +69,7 @@ Before starting an investigative action, it is sometimes helpful to look up the 
 .. code-block:: python
 
     def get_query_domain_devices(xc):
-        endpoint = xc.workbench.capabilities(customer_id).get("ENDPOINT")
+        endpoint = xc.capabilities().get("ENDPOINT")
         if endpoint:
             query_domain = endpoint.get("query_domain")
             if query_domain:
@@ -89,7 +89,7 @@ Iterate over all the investigations and print their title and status.
 
 .. code-block:: python
 
-    for inv in xc.workbench.investigations:
+    for inv in xc.investigations:
         s = "Investigation ID: {inv_id} Title: {inv_title} Status: {inv_status}"
         status = "OPEN" if inv.close_comment is not None else "CLOSED"
         print(s.format(inv_id=inv.id, inv_title=inv.title, inv_status=status))
@@ -103,7 +103,7 @@ List all comments, displaying when they were created and by which user.
 
 .. code-block:: python
 
-    for comment in xc.workbench.comments:
+    for comment in xc.comments:
         s = "[{ts}] {cmt} - {user}"
         print(s.format(ts=comment.created_at, cmt=comment.comment, user=comment.created_by.display_name))
 
@@ -115,8 +115,9 @@ Snippet: create comment
 Create a comment and associate it with an investigation.
 
 .. code-block:: python
-    comment = xc.workbench.comments.create(comment="Hello world!")
-    comment.relationship.investigation = '63ccd2b8-7594-4ac1-a747-d298a630b6ab'
+
+    comment = xc.comments.create(comment="Hello world!")
+    comment.relationship.investigation = 'my-investigation-id'
     comment.save()
 
 Snippet: Listing Investigative Actions
@@ -127,13 +128,15 @@ List investigative actions by type or capability name.
 For example, listing all manual (human driven) investigative actions:
 
 .. code-block:: python
-    for inv_act in xc.workbench.investigative_actions.search(action_type='MANUAL'):
+
+    for inv_act in xc.investigative_actions.search(action_type='MANUAL'):
         print(inv_act)
 
 Alternatively, you could search for all automatic actions to acquire a file like this:
 
 .. code-block:: python
-    for inv_act in xc.workbench.investigative_actions.search(capability_name='acquire_file'):
+
+    for inv_act in xc.investigative_actions.search(capability_name='acquire_file'):
         print(inv_act)
 
 .. _snippet top investigative actions:
@@ -144,11 +147,12 @@ Snippet: Find top automatic Investigative Actions
 Find the top 10 automatic investigative actions by number of times they are issued.
 
 .. code-block:: python
+
     from collections import defaultdict
 
     # Retrieve all automatic actions
     actions = defaultdict(int)
-    for action in xc.workbench.investigative_actions.search(action_type='TASKABILITY'):
+    for action in xc.investigative_actions.search(action_type='TASKABILITY'):
         actions[action.capability_name] += 1
 
     # Sort and list top 10 actions
@@ -163,7 +167,8 @@ Snippet: Creating new investigation
 Create a new investigation in Workbench.
 
 .. code-block:: python
-    inv = xc.workbench.investigations.create(title='My investigation title')
+
+    inv = xc.investigations.create(title='My investigation title')
     inv.save()
 
 .. _snippet list open investigations:
@@ -174,9 +179,10 @@ Snippet: List open investigation
 List open investigations in Workbench.
 
 .. code-block:: python
-    from xclient.workbench import notnull
 
-    for inv in xc.workbench.investigations.search(close_comment=notnull()):
+    from pyexclient.workbench import notnull
+
+    for inv in xc.investigations.search(close_comment=notnull()):
         print(inv)
 
 .. _snippet close investigation:
@@ -187,7 +193,8 @@ Snippet: Close an investigation
 Update an investigation’s state by closing it. Note that setting an investigation's close comment to anything other than None will close it.
 
 .. code-block:: python
-    with xc.workbench.investigations.get(id='my-investigation-id') as inv:
+
+    with xc.investigations.get(id='my-investigation-id') as inv:
         inv.close_comment = "This is a false positive."
 
 .. _snippet create investigation findings:
@@ -198,7 +205,8 @@ Snippet: Creating findings for an incident
 Create new investigative findings for an incident.
 
 .. code-block:: python
-    finding = xc.workbench.investigation_findings.create(
+
+    finding = xc.investigation_findings.create(
         rank = 1, # The order in which this finding will appear in Workbench
         title = "Where else is it?", # Title of the finding
         finding = "We found it **EVERYWHERE!**", # Markdown body for the finding
@@ -214,7 +222,8 @@ Snippet: Modify investigation findings
 Modify findings text for an investigation.
 
 .. code-block:: python
-    with xc.workbench.investigation_findings.get(id='my-finding-id') as finding:
+
+    with xc.investigation_findings.get(id='my-finding-id') as finding:
         finding.finding = "Updated: Turns out it wasn't _everywhere_..."
 
 .. _snippet create auto investigative action:
@@ -225,6 +234,7 @@ Snippet: Create an investigative action and poll for completion
 Create "auto" investigative actions, using our tasking framework. This example will use the Query Logs investigative action. After creating the investigative action shows how to download the results. Assumes the results completed. Requires knowing the following values: - Investigation ID - A user ID, can also use customer ID in place of a specific user - Vendor device ID to task - Input arguments to the "task" defined per capability - Query that is specific to the SIEM we are talking too. This example works on Sumo Logic.
 
 .. code-block:: python
+
         import time
         from io import BytesIO
         from datetime import datetime, timedelta
@@ -235,7 +245,7 @@ Create "auto" investigative actions, using our tasking framework. This example w
             end_time=datetime.now().isoformat(),
         )
 
-        action = xc.workbench.create_auto_inv_action(
+        action = xc.create_auto_inv_action(
             vendor_device_id='my-vendor-device-id',
             capability_name='query_logs',
             input_args=input_args,
@@ -248,7 +258,7 @@ Create "auto" investigative actions, using our tasking framework. This example w
         while action.status == 'RUNNING':
             print("Waiting for results...")
             time.sleep(3)
-            action = xc.workbench.investigative_actions.get(id=action.id)
+            action = xc.investigative_actions.get(id=action.id)
 
         if action.status == 'READY_FOR_ANALYSIS':
             results = io.BytesIO()
@@ -269,8 +279,9 @@ Snippet: Upload investigative data
 While uncommon, it can happen that a customer has access to logs or data that we don’t. In that case it’s important Expel gain access to that data to help complete an investigation. In this example we’ll show how you can upload arbitrary to an investigation.
 
 .. code-block:: python
+
     # create an manual investigative action
-    action = xc.workbench.investigative_actions.create(
+    action = xc.investigative_actions.create(
         action_type='MANUAL',
         title='Upload file',
         reason='To provide a file to Expel for analysis',
@@ -291,7 +302,8 @@ Snippet: Return Expel Alerts closed as PUP/PUA
 Expel Alert close decisions can be helpful to identify certain types of alerts in your organization. This example will find alerts with a close decision of PUP/PUA.
 
 .. code-block:: python
-    for ea in xc.workbench.expel_alerts.search(close_reason='PUP_PUA'):
+
+    for ea in xc.expel_alerts.search(close_reason='PUP_PUA'):
         print(ea)
 
 .. _snippet interact hunt investigation:
@@ -301,18 +313,9 @@ Snippet: Interacting with Expel hunting investigations
 Note: Hunting investigations are specific to the Expel Hunting service and available to those who have purchased this option.
 
 .. code-block:: python
-    for inv in xc.workbench.investigations.search(source_reason="HUNTING"):
+
+    for inv in xc.investigations.search(source_reason="HUNTING"):
         print(inv)
-
-.. _snippet device name to device id:
-
-Snippet: Return device name of security device ID
--------------------------------------------------
-Working with identifiers can be helpful, but also hard to mentally keep track of at times. This example is a simple function to return the human readable name of a security device ID
-
-.. code-block:: python
-    def get_device_name(vendor_device_guid):
-        return xc.workbench.security_devices.get(id=vendor_device_guid).name
 
 .. _snippet devices specific action:
 
@@ -321,7 +324,8 @@ Snippet: Return devices with a specific investigative action support
 Before starting an investigative action, it is sometimes helpful to look up the capabilities of your onboarded devices to make sure you have a device that supports a particular investigative action. This example will use Capabilities to look for `ENDPOINT` devices, such as EDR or antivirus devices, that support the Query Domain capability.
 
 .. code-block:: python
-    capabilities = xc.workbench.capabilities()
+
+    capabilities = xc.capabilities()
     supported = capabilities.get('ENDPOINT',{}).get('query_domain',{}).get('security_devices')
     if supported:
         print("Devices supporting this capability: ",supported)
@@ -335,7 +339,8 @@ Snippet: Close a remediation action as completed
 Update a remediation action as completed, and close it in Expel Workbench.
 
 .. code-block:: python
-    with xc.workbench.remediation_actions.get(id='remediation_action_id') as action:
+
+    with xc.remediation_actions.get(id='remediation_action_id') as action:
         action.status = 'COMPLETED'
         action.close_reason = 'We remediated this sytem.'
 
