@@ -8028,7 +8028,7 @@ class WorkbenchClient(WorkbenchCoreClient):
 
     def __init__(self, base_url, apikey=None, username=None, password=None, mfa_code=None, token=None, prompt_on_delete=True, organization_id=None):
         super().__init__(base_url, apikey=apikey, username=username, password=password,
-                         mfa_code=mfa_code, token=token, prompt_on_delete=prompt_on_delete,)
+                         mfa_code=mfa_code, token=token, prompt_on_delete=prompt_on_delete)
         self._organization_id = None
 
     @property
