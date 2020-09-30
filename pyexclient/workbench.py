@@ -8020,13 +8020,29 @@ class WorkbenchClient(WorkbenchCoreClient):
     :type mfa_code: int or None
     :param token: The bearer token of an authorized session. Can be used instead of ``apikey`` and ``username``/``password`` combo.
     :type token: str or None
+    :param organization_id: Optionally specify the organization ID you want to use for this session. By default we try to determine this for you. Only necessary for multi-org users.
+    :type organization_id: str or None
     :return: An initialized, and authorized Workbench client.
     :rtype: WorkbenchClient
     '''
 
-    def __init__(self, base_url, apikey=None, username=None, password=None, mfa_code=None, token=None, prompt_on_delete=True):
+    def __init__(self, base_url, apikey=None, username=None, password=None, mfa_code=None, token=None, prompt_on_delete=True, organization_id=None):
         super().__init__(base_url, apikey=apikey, username=username, password=password,
                          mfa_code=mfa_code, token=token, prompt_on_delete=prompt_on_delete)
+        self._organization_id = None
+
+    @property
+    def organization_id(self):
+        '''
+        Determine the user's organization ID automatically
+        '''
+        if self._organization_id:
+            return self._organization_id
+        orgs = [o.id for o in self.organizations]
+        if len(orgs) > 1:
+            logger.warning("User has multiple organizations, using {} for this session".format(orgs[0]))
+        self._organization_id = orgs[0]
+        return self._organization_id
 
     def create_manual_inv_action(self, title: str, reason: str, instructions: str, investigation_id: str = None, expel_alert_id: str = None, security_device_id: str = None, action_type: str = 'MANUAL'):
         '''
@@ -8072,21 +8088,17 @@ class WorkbenchClient(WorkbenchCoreClient):
 
         return ia.save()
 
-    def create_auto_inv_action(self, customer_id: str, vendor_device_id: str, created_by_id: str, capability_name: str, input_args: dict, title: str, reason: str, investigation_id: str = None, expel_alert_id: str = None):
+    def create_auto_inv_action(self, vendor_device_id: str, capability_name: str, input_args: dict, title: str, reason: str, investigation_id: str = None, expel_alert_id: str = None):
         '''
         Create an automatic investigative action.
 
 
-        :param customer_id: The customer ID
-        :type customer_id: str
         :param investigation_id: The investigation ID to associate the action with.
         :type investigation_id: str
         :param expel_alert_id: The expel alert id
         :type expel_alert_id: str
         :param vendor_device_id: The vendor device ID, to dispatch the task against.
         :type vendor_device_id: str
-        :param created_by_id: The user ID that created the action
-        :type created_by_id: str
         :param capability_name: The name of the capability we are running. Defined in classes https://github.com/expel-io/taskabilities/tree/master/py/taskabilities/cpe/capabilities, look at name class variable.
         :type capability_name: str
         :param input_args: The input arguments to the capability to run. Defined in classes https://github.com/expel-io/taskabilities/tree/master/py/taskabilities/cpe/capabilities, look at name class variable.
@@ -8101,7 +8113,7 @@ class WorkbenchClient(WorkbenchCoreClient):
         Examples:
             >>> xc = XClient.workbench('https://workbench.expel.io', username=username, password=password, mfa_code=mfa_code)
             >>> input_args = &#123;"user_name": 'willy.wonka@expel.io', 'time_range_start':'2019-01-30T14:00:40Z', 'time_range_end':'2019-01-30T14:45:40Z'&#125;
-            >>> o = xc.create_auto_inv_action(customer_guid, inv_guid, device_guid, user_guid, 'query_user', input_args, 'Query User', 'Getting user login activity to determine if login is normal')
+            >>> o = xc.create_auto_inv_action(inv_guid, device_guid, 'query_user', input_args, 'Query User', 'Getting user login activity to determine if login is normal')
             >>> print("Investigative Action ID: ", o.id)
         '''
         if not expel_alert_id and not investigation_id:
@@ -8117,17 +8129,14 @@ class WorkbenchClient(WorkbenchCoreClient):
             ia.relationship.expel_alert = expel_alert_id
         return ia.save()
 
-    def capabilities(self, customer_id: str):
+    def capabilities(self):
         '''
-        Get a list of capabilities for a given customer.
-
-        :param customer_id: The customer ID
-        :type customer_id: str
+        Get a list of capabilities available based on onboarded devices.
 
         Examples:
-            >>> xc.workbench.capabilities("my-customer-guid-123")
+            >>> xc.workbench.capabilities()
         '''
-        resp = self.request('get', '/api/v2/capabilities/%s' % customer_id)
+        resp = self.request('get', '/api/v2/capabilities/%s' % self.organization_id)
         return resp.json()
 
     def plugins(self):
