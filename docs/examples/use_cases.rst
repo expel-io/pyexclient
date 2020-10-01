@@ -346,21 +346,21 @@ Update a remediation action as completed, and close it in Expel Workbench.
 
 .. _script list all ips:
 
-Script: List all Destination IPs from Expel Alerts
+Script: Export Expel Alerts with Evidence Fields
 --------------------------------------------------
-There’s a fully documented script located in examples/list_dest_ip.py. This script will write a CSV containing timestamp of alert, expel alert name, security device and destination ip for all Expel alerts in the past year.
+There’s a fully documented script located in examples/export_expel_alert_evidence.py. This script will write a CSV containing timestamp of alert, expel alert name, vendor name,  and associated evidence fields.
 
 .. _script poll for ransomware:
 
-Script: Poll for ransomware Incidents
+Script: Poll for new Incidents
 -------------------------------------
-There’s a fully documented script located in examples/poll_ransomware_incidents.py. This script will poll Expel Workbench for any incidents created in the past five minutes that involved ransomware. The script will extract the asset ID (if provided by the EDR) and print that to screen. It’s the starting point for customers who are interested in SOAR integration.
+There’s a fully documented script located in examples/poll_incidents.py. This script will poll Expel Workbench for any incidents created in the past five minutes.
 
 .. _script bidirectional jira:
 
 Script: Bi-Directional State (JIRA)
 -----------------------------------
-This script will sync state between JIRA tickets and Expel Workbench. It’ll sync the following to JIRA from Expel Workbench:
+There’s a fully documented script located in examples/jira_sync.py. This script will sync state between JIRA tickets and Expel Workbench. It’ll sync the following to JIRA from Expel Workbench:
 
 * Investigative Actions details and outcome as sub tasks
 * Investigation description, lead alert
