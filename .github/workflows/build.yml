@@ -3,6 +3,8 @@ name: pyexclient ci/cd
 on:
   pull_request_target:
   push:
+    branches:
+        - master
     tags:
         - "*.*.*"
 
