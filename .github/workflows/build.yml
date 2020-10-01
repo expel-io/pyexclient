@@ -2,8 +2,6 @@ name: pyexclient ci/cd
 
 on:
   pull_request:
-    branches:
-      - master
   push:
     tags:
         - "*.*.*"
@@ -32,8 +30,9 @@ jobs:
     - name: install dependencies
       run: |
         python -m pip install pytest
-    # - name: run tests
-    #   run: pytest -vx
+        if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+    - name: run tests
+      run: pytest -vx
 
   release:
     if: startsWith(github.ref, 'refs/tags/')
