@@ -289,7 +289,8 @@ class JiraSyncer(object):
             return
         logging.info("Closing sub task ID: {}".format(subtask))
         issue = self.jira.issue(subtask)
-        self.jira.add_comment(issue.key, message)
+        if message:
+            self.jira.add_comment(issue.key, message)
         self.jira.transition_issue(issue, transition='Done')
 
     def _make_rem_action_message(self, action):
@@ -324,7 +325,7 @@ class JiraSyncer(object):
                 self.create_jira_subtask(act.investigation, act.id, ticket_id, act.action, self._make_rem_action_message(act))
             else:
                 logging.info("Closing task from remediation action ID: {}".format(act.id))
-                self.close_jira_subtask(act.investigation, act.id, ticket_id, act.title, act.close_reason)
+                self.close_jira_subtask(act.investigation, act.id, act.close_reason)
 
     def sync_wb_comments(self):
         '''
