@@ -1,0 +1,63 @@
+name: pyexclient ci/cd
+
+on:
+  pull_request:
+    branches:
+      - master
+  push:
+    tags:
+        - "*.*.*"
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+    - name: run linter
+      uses: github/super-linter@v3
+      env:
+        VALIDATE_PYTHON_FLAKE8: true
+        PYTHON_FLAKE8_CONFIG_FILE: .flake8
+        FILTER_REGEX_EXCLUDE: (/docs/|/examples/|versioneer\.py)
+
+  test:
+    needs:
+    - lint
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: set up python
+      uses: actions/setup-python@v2
+      with:
+        python-version: '3.7'
+    - name: install dependencies
+      run: |
+        python -m pip install pytest
+    # - name: run tests
+    #   run: pytest -vx
+
+  release:
+    if: startsWith(github.ref, 'refs/tags/')
+    needs:
+    - test
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: set up python
+      uses: actions/setup-python@v2
+      with:
+        python-version: '3.7'
+    - name: install dependencies
+      run: |
+        python -m pip install --upgrade setuptools wheel
+    - name: build wheels
+      run: python setup.py bdist_wheel
+    - name: publish to TEST pypi
+      uses: pypa/gh-action-pypi-publish@master
+      with:
+        password: ${{ secrets.TEST_PYPI_PASSWORD }}
+        repository_url: https://test.pypi.org/legacy/
+    # - name: publish to pypi
+    #   if: startsWith(github.ref, 'refs/tags')
+    #   uses: pypa/gh-action-pypi-publish@master
+    #   with:
+    #     password: ${{ secrets.pypi_password }}

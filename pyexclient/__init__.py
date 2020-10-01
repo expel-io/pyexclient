@@ -1,1 +1,1 @@
-from .workbench import WorkbenchClient
+from .workbench import WorkbenchClient # noqa
