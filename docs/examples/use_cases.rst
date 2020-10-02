@@ -33,7 +33,7 @@ To authenticate with an api key:
 Snippet: List all open remediation actions
 ------------------------------------------
 
-Sometimes it can be useful to review all open remediation actions. This is a snippet of examples/open_remediation_actions.py will list all remediation actions
+Sometimes it can be useful to review all open remediation actions. This is a snippet of `Open Remediation Actions <https://github.com/expel-io/pyexclient/blob/master/examples/open_remediation_actions.py>`_ will list all remediation actions
 that are not currently completed or closed. You can optionally specifiy a date range to scope the search too.
 
 .. literalinclude:: ../../examples/open_remediation_actions.py
@@ -346,30 +346,24 @@ Update a remediation action as completed, and close it in Expel Workbench.
 
 .. _script list all ips:
 
-Script: List all Destination IPs from Expel Alerts
+Script: Export Expel Alerts with Evidence Fields
 --------------------------------------------------
-There’s a fully documented script located in examples/list_dest_ip.py. This script will write a CSV containing timestamp of alert, expel alert name, security device and destination ip for all Expel alerts in the past year.
+See the example script `Export Expel Alert Evidence <https://github.com/expel-io/pyexclient/blob/master/examples/export_expel_alert_evidence.py>`_. This script will write a CSV containing timestamp of alert, expel alert name, vendor name,  and associated evidence fields.
 
 .. _script poll for ransomware:
 
-Script: Poll for ransomware Incidents
+Script: Poll for new Incidents
 -------------------------------------
-There’s a fully documented script located in examples/poll_ransomware_incidents.py. This script will poll Expel Workbench for any incidents created in the past five minutes that involved ransomware. The script will extract the asset ID (if provided by the EDR) and print that to screen. It’s the starting point for customers who are interested in SOAR integration.
+See the example script `Poll For New Incidents <https://github.com/expel-io/pyexclient/blob/master/examples/poll_incidents.py>`_. This script will poll Expel Workbench for any incidents created in the past five minutes.
 
 .. _script bidirectional jira:
 
 Script: Bi-Directional State (JIRA)
 -----------------------------------
-This script will sync state between JIRA tickets and Expel Workbench. It’ll sync the following to JIRA from Expel Workbench:
+See the example script `Jira Sync <https://github.com/expel-io/pyexclient/blob/master/examples/jira_sync.py>`_. This script will sync state between JIRA tickets and Expel Workbench. It’ll sync the following to JIRA from Expel Workbench:
 
 * Investigative Actions details and outcome as sub tasks
 * Investigation description, lead alert
 * Investigative comments
 * Incident findings
 * Investigation status closed/opened
-
-It’ll sync to Workbench:
-
-* Investigative comments
-* Ticket status closed/open
-

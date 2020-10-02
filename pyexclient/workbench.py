@@ -6,6 +6,7 @@ import json
 import logging
 import pprint
 import time
+
 from urllib.parse import urlencode
 from urllib.parse import urljoin
 
@@ -14,6 +15,9 @@ from requests.adapters import HTTPAdapter
 from requests.exceptions import ConnectionError
 from requests.packages.urllib3.exceptions import InsecureRequestWarning
 from urllib3.util.retry import Retry
+from ._version import get_versions
+
+__version__ = get_versions()['version']
 requests.packages.urllib3.disable_warnings(InsecureRequestWarning)
 logging.getLogger("urllib3").setLevel(logging.WARNING)
 logging.basicConfig(level=logging.DEBUG)
@@ -160,8 +164,8 @@ class window:
     :type end: str
 
     Examples:
-        >>> for ea in xc.expel_alerts.search(created_at=lt("2020-01-01")):
-        >>>     print("%s was created before 2020-01-01" % ea.expel_name)
+        >>> for ea in xc.expel_alerts.search(window("created_at", "2020-01-01","2020-02-01")):
+        >>>     print("%s was created before 2020-01-01 and after 2020-02-01" % ea.expel_name)
     '''
 
     def __init__(self, field_name, start, end):
@@ -7841,7 +7845,7 @@ class WorkbenchCoreClient:
         HTTPAdapter(max_retries=_make_retry())
 
         self.session = session
-        self.session.headers = {'content-type': 'application/json'}
+        self.session.headers = {'content-type': 'application/json', 'User-Agent': 'PyExClient {version}'.format(version=__version__)}
 
         if self.apikey:
             self.token = self.service_login(self.apikey)
