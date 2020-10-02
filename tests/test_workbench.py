@@ -1,3 +1,4 @@
+import copy
 import datetime
 import uuid
 from unittest.mock import MagicMock
@@ -507,6 +508,60 @@ class TestBaseResourceObject:
         inv = mock_xclient.investigations.create(**raw_investigation_dict['attributes'])
         assert isinstance(inv, Investigations)
         assert inv._create is True
+
+
+class TestResourceInstance:
+    def test_save(self, raw_investigation_dict):
+        mock_conn = Mock()
+        ret_dict = copy.deepcopy(raw_investigation_dict)
+        ret_dict['id'] = '111'
+        mock_conn.request.return_value.json.return_value = {'data': ret_dict}
+
+        inv = Investigations.create(mock_conn, **raw_investigation_dict['attributes'])
+        assert inv.id is None
+        assert inv.short_link == 'TEST-489'
+        assert inv._create is True
+        inv.save()
+        assert inv.id == '111'
+        inv.short_link = 'SOME VAL'
+        assert inv._create is False
+        inv.save()
+
+    def test_create(self, raw_investigation_dict):
+        mock_conn = Mock()
+        ret_dict = copy.deepcopy(raw_investigation_dict)
+        ret_dict['id'] = '111'
+        mock_conn.request.return_value.json.return_value = {'data': ret_dict}
+
+        inv = Investigations.create(mock_conn, **raw_investigation_dict['attributes'])
+        assert inv.id is None
+        assert inv.short_link == 'TEST-489'
+        assert inv._create is True
+        inv.save()
+        assert inv.id == '111'
+
+    def test_str(self, raw_investigation_dict):
+        # make sure str sets the _id attribute properly
+        mock_conn = Mock()
+        ret_dict = copy.deepcopy(raw_investigation_dict)
+        ret_dict['id'] = '111'
+        mock_conn.request.return_value.json.return_value = {'data': ret_dict}
+
+        inv = Investigations.create(mock_conn, **raw_investigation_dict['attributes'])
+        inv.save()
+        result = str(inv)
+        assert "'id': '111'" in result
+
+    def test_delete(self, raw_investigation_dict):
+        mock_conn = Mock()
+        ret_dict = copy.deepcopy(raw_investigation_dict)
+        ret_dict['id'] = '111'
+        mock_conn.request.return_value.json.return_value = {'data': ret_dict}
+
+        inv = Investigations.create(mock_conn, **raw_investigation_dict['attributes'])
+        inv.save()
+        inv.delete()
+        assert inv._deleted is True
 
 
 @pytest.mark.parametrize("answer,exc_msg,prompt_on_delete", [
