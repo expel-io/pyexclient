@@ -81,7 +81,7 @@ def auth_jira():
       }
     )
 
-class JiraSyncer(object):
+class JiraSyncer:
     '''
     This class syncs data between Jira and Workbench
     '''
