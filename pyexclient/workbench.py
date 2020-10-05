@@ -4850,7 +4850,7 @@ class WorkbenchCoreClient:
         # Note the login route returns 401 even when password is valid as a way to
         # move to the second phase which is posting the 2fa code..
         if resp.status_code != 401:
-            logger.bind(status_code=resp.status_code).error("Got unexpected http response code")
+            logger.error("Got unexpected http response code {}".format(resp.status_code))
             return None
 
         headers['x-expelinc-otp'] = str(code)
@@ -4931,7 +4931,7 @@ class WorkbenchCoreClient:
                 )
             except ConnectionError:
                 # if connection was fatally closed, create a new session and try again
-                logger.bind().warning("XClient got connection error, recreating session...")
+                logger.warning("XClient got connection error, recreating session...")
                 time.sleep(5)
                 self.make_session()
                 resp = self.session.request(
