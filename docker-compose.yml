@@ -1,0 +1,8 @@
+---
+version: '2'
+
+services:
+  test:
+    image: expel-docker-dev.jfrog.io/expel-python:latest
+    volumes:
+      - .:/app
