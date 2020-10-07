@@ -120,7 +120,7 @@ You can specify a field should be greater than, and/or less than a value by usin
 
     start_date = (datetime.datetime.now()-datetime.timedelta(days=1)).isoformat()
 
-    for cmt in x.comments.search(comment="^hey", created_at=gt(start_date)::
+    for cmt in x.comments.search(comment=startswith("hey"), created_at=gt(start_date)::
         print(f"Found comment in past 24 hours that starts with hey ‘{cmt.comment}’")
 
 The above snippet looks for comments starting with the word “hey” that were created in the past 24 hours. 
@@ -130,7 +130,7 @@ The above snippet looks for comments starting with the word “hey” that were 
 
     end_date = datetime.datetime.now().isoformat()
 
-    for cmt in x.comments.search(comment="^hey", created_at=lt(end_date)
+    for cmt in x.comments.search(comment=startswith("hey"), created_at=lt(end_date)
          print(f"Found comment in past 24 hours that starts with hey ‘{cmt.comment}’")
 
 The above snippet does the same thing looking for comments created at a timestamp less than the current time. Finally the window operator:
@@ -140,7 +140,7 @@ The above snippet does the same thing looking for comments created at a timestam
     start_dt = (datetime.datetime.now()-datetime.timedelta(days=3)).isoformat()
     end_date = (datetime.datetime.now()-datetime.timedelta(days=1)).isoformat()
 
-    for cmt in x.comments.search(window("created_at", start_dt, end_date), comment="^hey"):
+    for cmt in x.comments.search(window("created_at", start_dt, end_date), comment=startswith("hey")):
          print(f"Found comment in past 2 days that starts with hey ‘{cmt.comment}’")
 
 This example looks for comments created in past two days that start with “hey”. The window operator supports strings, integers and datetime objects.
