@@ -94,9 +94,7 @@ for inv in wb.investigations:
     print(inv)
 ```
 
-_For more examples (we have a ton!), please refer to the [Documentation](READTHEDOCS)_
-_- [Code Snippets](READTHEDOCS)_
-_- [Example Scripts](READTHEDOCS)_
+_For more examples (we have a ton!), please refer to the [Documentation](READTHEDOCS). As a starting point, check out [Code Snippets](READTHEDOCS) and [Example Scripts](READTHEDOCS)._
 
 
 <!-- ISSUES -->
