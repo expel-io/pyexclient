@@ -57,7 +57,7 @@ pip install pyexclient
 <!-- USAGE EXAMPLES -->
 ## Usage
 
-You can get started with Pyexclient in 2 easy steps:
+You can get started with Pyexclient in two easy steps:
 
 **Step 1: Authenticate to Workbench**
 
