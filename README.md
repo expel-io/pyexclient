@@ -86,6 +86,7 @@ wb = WorkbenchClient(
 ```
 
 **Step 2: Start Exploring!**
+
 In the example below, we're printing investigations:
 ```py
 
