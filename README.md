@@ -8,8 +8,6 @@
     <a href="READTHEDOCS"><strong>Explore the docs »</strong></a>
     <br />
     <br />
-    <a href="https://github.com/expel-io/pyexclient">View Demo</a>
-    ·
     <a href="https://github.com/expel-io/pyexclient/issues">Report Bug</a>
     ·
     <a href="https://github.com/expel-io/pyexclient/issues">Request Feature</a>
@@ -61,7 +59,7 @@ pip install pyexclient
 
 You can get started with Pyexclient in 2 easy steps:
 
-1. Authenticate to Workbench
+**Step 1: Authenticate to Workbench**
 
 You can authenticate with your Expel Workbench credentials:
 ```py
@@ -87,7 +85,7 @@ wb = WorkbenchClient(
     )
 ```
 
-2. Start exploring!
+**Step 2: Start Exploring!**
 In the example below, we're printing investigations:
 ```py
 
@@ -96,12 +94,12 @@ for inv in wb.investigations:
 ```
 
 _For more examples (we have a ton!), please refer to the [Documentation](READTHEDOCS)_
-- [Code Snippets](READTHEDOCS)
-- [Example Scripts](READTHEDOCS)
+_- [Code Snippets](READTHEDOCS)_
+_- [Example Scripts](READTHEDOCS)_
 
 
 <!-- ISSUES -->
-## Reporting a bug / Filing a Feature Request
+## Issues
 
 If you find a bug or have an idea for the next amazing feature, please [create an issue](https://github.com/expel-io/pyexclient/issues). We'll get back to you as soon as we can!
 
