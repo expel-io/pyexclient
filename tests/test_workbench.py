@@ -42,6 +42,10 @@ def mock_xclient():
         yield x
 
 
+def test_user_agent_set(mock_xclient):
+    assert mock_xclient.session.headers['User-Agent'] == 'pyexclient'
+
+
 class TestNotNullOperator:
     def test_false(self, mock_xclient):
         mock_xclient.investigations.search(close_comment=notnull(False))
