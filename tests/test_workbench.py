@@ -33,7 +33,7 @@ def get_url_from_request_mock(x):
 
 
 @pytest.fixture()
-def mock_xclient():
+def mock_pyexclient():
     with patch.object(WorkbenchClient, 'request') as mock_method:
         x = WorkbenchClient('', '', '')
         mock_method.return_value = Mock()
