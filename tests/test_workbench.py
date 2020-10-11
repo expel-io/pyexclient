@@ -8,22 +8,22 @@ from urllib.parse import unquote
 
 import pytest
 
-from pyexclient.workbench import base_flag
-from pyexclient.workbench import contains
-from pyexclient.workbench import gt
-from pyexclient.workbench import include
-from pyexclient.workbench import Investigations
-from pyexclient.workbench import is_operator
-from pyexclient.workbench import isnull
-from pyexclient.workbench import limit
-from pyexclient.workbench import lt
-from pyexclient.workbench import neq
-from pyexclient.workbench import notnull
-from pyexclient.workbench import relationship_op
-from pyexclient.workbench import sort
-from pyexclient.workbench import startswith
-from pyexclient.workbench import window
-from pyexclient.workbench import WorkbenchClient
+from xclient.workbench import contains
+from xclient.workbench import flag
+from xclient.workbench import gt
+from xclient.workbench import include
+from xclient.workbench import Investigations
+from xclient.workbench import is_operator
+from xclient.workbench import isnull
+from xclient.workbench import limit
+from xclient.workbench import lt
+from xclient.workbench import neq
+from xclient.workbench import notnull
+from xclient.workbench import relationship
+from xclient.workbench import sort
+from xclient.workbench import startswith
+from xclient.workbench import window
+from xclient.workbench import WorkbenchClient
 
 ORGANIZATION_ID = '11111111-1111-1111-1111-111111111111'
 
@@ -43,7 +43,7 @@ def mock_xclient():
 
 
 def test_user_agent_set(mock_xclient):
-    assert mock_xclient.session.headers['User-Agent'] == 'pyexclient'
+    assert mock_xclient.session.headers['User-Agent'] == 'xclient'
 
 
 class TestNotNullOperator:
@@ -52,7 +52,7 @@ class TestNotNullOperator:
         result = get_url_from_request_mock(mock_xclient)
         assert result == '/api/v2/investigations?filter[close_comment]=\u2400true&sort=+created_at&sort=+id'
 
-        mock_xclient.investigations.search(relationship_op('comments.comment', notnull(False)))
+        mock_xclient.investigations.search(relationship('comments.comment', notnull(False)))
         result = get_url_from_request_mock(mock_xclient)
         assert result == '/api/v2/investigations?filter[comments][comment]=\u2400true&sort=+created_at&sort=+id'
 
@@ -61,7 +61,7 @@ class TestNotNullOperator:
         result = get_url_from_request_mock(mock_xclient)
         assert result == '/api/v2/investigations?filter[close_comment]=\u2400false&sort=+created_at&sort=+id'
 
-        mock_xclient.investigations.search(relationship_op('comments.comment', notnull(True)))
+        mock_xclient.investigations.search(relationship('comments.comment', notnull(True)))
         result = get_url_from_request_mock(mock_xclient)
         assert result == '/api/v2/investigations?filter[comments][comment]=\u2400false&sort=+created_at&sort=+id'
 
@@ -70,7 +70,7 @@ class TestNotNullOperator:
             mock_xclient.investigations.search(close_comment=notnull(21123))
 
         with pytest.raises(ValueError):
-            mock_xclient.investigations.search(relationship_op('comments.comment', notnull(21123)))
+            mock_xclient.investigations.search(relationship('comments.comment', notnull(21123)))
 
 
 class TestIsNullOperator:
@@ -79,7 +79,7 @@ class TestIsNullOperator:
         result = get_url_from_request_mock(mock_xclient)
         assert result == '/api/v2/investigations?filter[close_comment]=\u2400false&sort=+created_at&sort=+id'
 
-        mock_xclient.investigations.search(relationship_op('comments.comment', isnull(False)))
+        mock_xclient.investigations.search(relationship('comments.comment', isnull(False)))
         result = get_url_from_request_mock(mock_xclient)
         assert result == '/api/v2/investigations?filter[comments][comment]=\u2400false&sort=+created_at&sort=+id'
 
@@ -88,7 +88,7 @@ class TestIsNullOperator:
         result = get_url_from_request_mock(mock_xclient)
         assert result == '/api/v2/investigations?filter[close_comment]=\u2400true&sort=+created_at&sort=+id'
 
-        mock_xclient.investigations.search(relationship_op('comments.comment', isnull(True)))
+        mock_xclient.investigations.search(relationship('comments.comment', isnull(True)))
         result = get_url_from_request_mock(mock_xclient)
         assert result == '/api/v2/investigations?filter[comments][comment]=\u2400true&sort=+created_at&sort=+id'
 
@@ -97,7 +97,7 @@ class TestIsNullOperator:
             mock_xclient.investigations.search(close_comment=isnull(21123))
 
         with pytest.raises(ValueError):
-            mock_xclient.investigations.search(relationship_op('comments.comment', isnull(21123)))
+            mock_xclient.investigations.search(relationship('comments.comment', isnull(21123)))
 
 
 class TestContainsOperator:
@@ -106,7 +106,7 @@ class TestContainsOperator:
         result = get_url_from_request_mock(mock_xclient)
         assert result == '/api/v2/investigations?sort=+created_at&sort=+id'
 
-        mock_xclient.investigations.search(relationship_op('comments.comment', contains()))
+        mock_xclient.investigations.search(relationship('comments.comment', contains()))
         result = get_url_from_request_mock(mock_xclient)
         assert result == '/api/v2/investigations?sort=+created_at&sort=+id'
 
@@ -115,7 +115,7 @@ class TestContainsOperator:
         result = get_url_from_request_mock(mock_xclient)
         assert result == '/api/v2/investigations?filter[close_comment]=:one&filter[close_comment]=:two&sort=+created_at&sort=+id'
 
-        mock_xclient.investigations.search(relationship_op('comments.comment', contains('one', 'two')))
+        mock_xclient.investigations.search(relationship('comments.comment', contains('one', 'two')))
         result = get_url_from_request_mock(mock_xclient)
         assert result == '/api/v2/investigations?filter[comments][comment]=:one&filter[comments][comment]=:two&sort=+created_at&sort=+id'
 
@@ -126,7 +126,7 @@ class TestStartsWithOperator:
         result = get_url_from_request_mock(mock_xclient)
         assert result == '/api/v2/investigations?filter[close_comment]=^one&sort=+created_at&sort=+id'
 
-        mock_xclient.investigations.search(relationship_op('comments.comment', startswith('one')))
+        mock_xclient.investigations.search(relationship('comments.comment', startswith('one')))
         result = get_url_from_request_mock(mock_xclient)
         assert result == '/api/v2/investigations?filter[comments][comment]=^one&sort=+created_at&sort=+id'
 
@@ -137,7 +137,7 @@ class TestNotEqualsOperator:
         result = get_url_from_request_mock(mock_xclient)
         assert result == '/api/v2/investigations?sort=+created_at&sort=+id'
 
-        mock_xclient.investigations.search(relationship_op('comments.comment', neq()))
+        mock_xclient.investigations.search(relationship('comments.comment', neq()))
         result = get_url_from_request_mock(mock_xclient)
         assert result == '/api/v2/investigations?sort=+created_at&sort=+id'
 
@@ -146,7 +146,7 @@ class TestNotEqualsOperator:
         result = get_url_from_request_mock(mock_xclient)
         assert result == '/api/v2/investigations?filter[close_comment]=!one&filter[close_comment]=!two&sort=+created_at&sort=+id'
 
-        mock_xclient.investigations.search(relationship_op('comments.comment', neq('one', 'two')))
+        mock_xclient.investigations.search(relationship('comments.comment', neq('one', 'two')))
         result = get_url_from_request_mock(mock_xclient)
         assert result == '/api/v2/investigations?filter[comments][comment]=!one&filter[comments][comment]=!two&sort=+created_at&sort=+id'
 
@@ -159,7 +159,7 @@ class TestGreaterThanOperator:
         result = get_url_from_request_mock(mock_xclient)
         assert result == '/api/v2/investigations?filter[close_comment]=>2020-01-01T00:00:00&sort=+created_at&sort=+id'
 
-        mock_xclient.investigations.search(relationship_op('comments.comment', gt(dt)))
+        mock_xclient.investigations.search(relationship('comments.comment', gt(dt)))
         result = get_url_from_request_mock(mock_xclient)
         assert result == '/api/v2/investigations?filter[comments][comment]=>2020-01-01T00:00:00&sort=+created_at&sort=+id'
 
@@ -168,7 +168,7 @@ class TestGreaterThanOperator:
         result = get_url_from_request_mock(mock_xclient)
         assert result == '/api/v2/investigations?filter[close_comment]=>245&sort=+created_at&sort=+id'
 
-        mock_xclient.investigations.search(relationship_op('comments.comment', gt(245)))
+        mock_xclient.investigations.search(relationship('comments.comment', gt(245)))
         result = get_url_from_request_mock(mock_xclient)
         assert result == '/api/v2/investigations?filter[comments][comment]=>245&sort=+created_at&sort=+id'
 
@@ -181,7 +181,7 @@ class TestLessThanOperator:
         result = get_url_from_request_mock(mock_xclient)
         assert result == '/api/v2/investigations?filter[close_comment]=<2020-01-01T00:00:00&sort=+created_at&sort=+id'
 
-        mock_xclient.investigations.search(relationship_op('comments.comment', lt(dt)))
+        mock_xclient.investigations.search(relationship('comments.comment', lt(dt)))
         result = get_url_from_request_mock(mock_xclient)
         assert result == '/api/v2/investigations?filter[comments][comment]=<2020-01-01T00:00:00&sort=+created_at&sort=+id'
 
@@ -190,7 +190,7 @@ class TestLessThanOperator:
         result = get_url_from_request_mock(mock_xclient)
         assert result == '/api/v2/investigations?filter[close_comment]=<245&sort=+created_at&sort=+id'
 
-        mock_xclient.investigations.search(relationship_op('comments.comment', lt(245)))
+        mock_xclient.investigations.search(relationship('comments.comment', lt(245)))
         result = get_url_from_request_mock(mock_xclient)
         assert result == '/api/v2/investigations?filter[comments][comment]=<245&sort=+created_at&sort=+id'
 
@@ -204,7 +204,7 @@ class TestWindowOperator:
         result = get_url_from_request_mock(mock_xclient)
         assert result == '/api/v2/investigations?filter[close_comment]=>2020-01-01T00:00:00&filter[close_comment]=<2020-05-01T00:00:00&sort=+created_at&sort=+id'
 
-        mock_xclient.investigations.search(relationship_op('comments.comment', window(dt_1, dt_2)))
+        mock_xclient.investigations.search(relationship('comments.comment', window(dt_1, dt_2)))
         result = get_url_from_request_mock(mock_xclient)
         assert result == '/api/v2/investigations?filter[comments][comment]=>2020-01-01T00:00:00&filter[comments][comment]=<2020-05-01T00:00:00&sort=+created_at&sort=+id'
 
@@ -213,14 +213,14 @@ class TestWindowOperator:
         result = get_url_from_request_mock(mock_xclient)
         assert result == '/api/v2/investigations?filter[close_comment]=>100&filter[close_comment]=<500&sort=+created_at&sort=+id'
 
-        mock_xclient.investigations.search(relationship_op('comments.comment', window(100, 500)))
+        mock_xclient.investigations.search(relationship('comments.comment', window(100, 500)))
         result = get_url_from_request_mock(mock_xclient)
         assert result == '/api/v2/investigations?filter[comments][comment]=>100&filter[comments][comment]=<500&sort=+created_at&sort=+id'
 
 
 class TestFlagOperator:
     def test_value(self, mock_xclient):
-        mock_xclient.investigations.search(close_comment=base_flag('test'))
+        mock_xclient.investigations.search(close_comment=flag('test'))
         result = get_url_from_request_mock(mock_xclient)
         assert result == '/api/v2/investigations?flag[close_comment]=test&sort=+created_at&sort=+id'
 
@@ -229,17 +229,17 @@ class TestrelationshipOperator:
     def test_init_except(self, mock_xclient):
         too_long = 'comment.comment.comment'
         with pytest.raises(ValueError):
-            relationship_op(too_long, '')
+            relationship(too_long, '')
 
     def test_no_rels(self, mock_xclient):
-        rel = relationship_op('comment.comment', '')
+        rel = relationship('comment.comment', '')
         with pytest.raises(ValueError) as e:
             rel.create_query_filters()
 
         assert str(e.value) == 'Relationship operator has no class relationships defined'
 
-    def test_relationship_op_does_not_exist(self, mock_xclient):
-        rel = relationship_op('something.not_existing', '')
+    def test_relationship_does_not_exist(self, mock_xclient):
+        rel = relationship('something.not_existing', '')
         rel.rels = ['one', 'two']
         with pytest.raises(ValueError) as e:
             rel.create_query_filters()
@@ -247,7 +247,7 @@ class TestrelationshipOperator:
         assert 'not a defined relationship' in str(e.value)
 
     def test_create_operator(self, mock_xclient):
-        rel = relationship_op('comments.comment', window(123, 456))
+        rel = relationship('comments.comment', window(123, 456))
         rel.rels = ['comments']
 
         result = rel.create_query_filters()
@@ -255,7 +255,7 @@ class TestrelationshipOperator:
                           ('filter[comments][comment]', '<456')]
 
     def test_create_value(self, mock_xclient):
-        rel = relationship_op('comments.comment', 'some value')
+        rel = relationship('comments.comment', 'some value')
         rel.rels = ['comments']
 
         result = rel.create_query_filters()
@@ -381,9 +381,9 @@ class TestBaseResourceObject:
 
     def test_search_complex_args(self, mock_xclient):
         args = [
-            relationship_op('investigation.created_at', gt(datetime.datetime(2020, 1, 1))),
-            relationship_op('investigation.created_at', lt(datetime.datetime(2020, 5, 1))),
-            relationship_op('investigation.organization_id', ORGANIZATION_ID)
+            relationship('investigation.created_at', gt(datetime.datetime(2020, 1, 1))),
+            relationship('investigation.created_at', lt(datetime.datetime(2020, 5, 1))),
+            relationship('investigation.organization_id', ORGANIZATION_ID)
         ]
         kwargs = {
             'action_types': 'MANUAL',
@@ -395,9 +395,9 @@ class TestBaseResourceObject:
 
     def test_search_more_complex_args(self, mock_xclient):
         args = [
-            relationship_op('investigation.created_at', gt(datetime.datetime(2020, 1, 1))),
-            relationship_op('investigation.created_at', lt(datetime.datetime(2020, 5, 1))),
-            relationship_op('investigation.organization_id', ORGANIZATION_ID),
+            relationship('investigation.created_at', gt(datetime.datetime(2020, 1, 1))),
+            relationship('investigation.created_at', lt(datetime.datetime(2020, 5, 1))),
+            relationship('investigation.organization_id', ORGANIZATION_ID),
             sort('created_at')
         ]
         kwargs = {
@@ -574,7 +574,7 @@ class TestResourceInstance:
     ('y', None, True),
     ('n', None, False),
 ])
-@patch('pyexclient.workbench.logger', Mock())
+@patch('xclient.workbench.logger', Mock())
 def test_delete_prompt_answer(answer, exc_msg, prompt_on_delete):
     '''
     Test that we prompt on delete, we raise if we dont get corret prompt on delete, and we don't raise when user expected delete

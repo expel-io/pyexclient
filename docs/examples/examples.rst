@@ -76,7 +76,7 @@ In the snippet above we’re searching for any remediation action that is not cu
 
 contains()
 """"""""""
-.. warning:: Partial matches are not indexed and API performance can be impacted by doing a lot of these requests. Investigative data is indexed and optimized for searching, but you must use base_flag("search", "term").
+.. warning:: Partial matches are not indexed and API performance can be impacted by doing a lot of these requests. Investigative data is indexed and optimized for searching, but you must use flag("search", "term").
 
 
 This operator will do a substring search (“partial match”) on a given attribute’s value and return the resource instances that have a partial match. This search operation is case insensitive. This operator will return resource instances where the specified attribute is equal to the value provided to filter by.
@@ -145,13 +145,13 @@ The above snippet does the same thing looking for comments created at a timestam
 
 This example looks for comments created in past two days that start with “hey”. The window operator supports strings, integers and datetime objects.
 
-base_flag()
-"""""""""""
+flag()
+""""""
 Our API supports a custom query parameter called flag. Flag allows callers to pass variables to the backend. Flags are defined on a resource by resource basis, and will alter the behavior of a given API call. The most commonly used flag parameter will be "search" which will search investigative data in a highly optimized way.
 
 .. code-block:: python
 
-    for inv in x.investigations.search(base_flag("search", "ransomware")):
+    for inv in x.investigations.search(flag("search", "ransomware")):
         print(f"Incident related to ransomware: {inv.title}")
 
 
