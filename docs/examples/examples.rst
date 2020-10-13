@@ -76,7 +76,7 @@ In the snippet above we’re searching for any remediation action that is not cu
 
 contains()
 """"""""""
-.. warning:: Partial matches are not index and API performance can be impacted by doing a lot of these requests. Investigative data is indexed and optimized for searching, but you must use XXX API route.
+.. warning:: Partial matches are not indexed and API performance can be impacted by doing a lot of these requests. Investigative data is indexed and optimized for searching, but you must use flag("search", "term").
 
 
 This operator will do a substring search (“partial match”) on a given attribute’s value and return the resource instances that have a partial match. This search operation is case insensitive. This operator will return resource instances where the specified attribute is equal to the value provided to filter by.
@@ -120,7 +120,7 @@ You can specify a field should be greater than, and/or less than a value by usin
 
     start_date = (datetime.datetime.now()-datetime.timedelta(days=1)).isoformat()
 
-    for cmt in x.comments.search(comment="^hey", created_at=gt(start_date)::
+    for cmt in x.comments.search(comment=startswith("hey"), created_at=gt(start_date)::
         print(f"Found comment in past 24 hours that starts with hey ‘{cmt.comment}’")
 
 The above snippet looks for comments starting with the word “hey” that were created in the past 24 hours. 
@@ -130,7 +130,7 @@ The above snippet looks for comments starting with the word “hey” that were 
 
     end_date = datetime.datetime.now().isoformat()
 
-    for cmt in x.comments.search(comment="^hey", created_at=lt(end_date)
+    for cmt in x.comments.search(comment=startswith("hey"), created_at=lt(end_date)
          print(f"Found comment in past 24 hours that starts with hey ‘{cmt.comment}’")
 
 The above snippet does the same thing looking for comments created at a timestamp less than the current time. Finally the window operator:
@@ -140,10 +140,18 @@ The above snippet does the same thing looking for comments created at a timestam
     start_dt = (datetime.datetime.now()-datetime.timedelta(days=3)).isoformat()
     end_date = (datetime.datetime.now()-datetime.timedelta(days=1)).isoformat()
 
-    for cmt in x.comments.search(window("created_at", start_dt, end_date), comment="^hey"):
+    for cmt in x.comments.search(window("created_at", start_dt, end_date), comment=startswith("hey")):
          print(f"Found comment in past 2 days that starts with hey ‘{cmt.comment}’")
 
 This example looks for comments created in past two days that start with “hey”. The window operator supports strings, integers and datetime objects.
+
+base_flag()
+"""""""""""
+Our API supports a custom query parameter called flag. Flag allows callers to pass variables to the backend. Flags are defined on a resource by resource basis, and will alter the behavior of a given API call. The most commonly used flag parameter will be "search" which will search investigative data in a highly optimized way.
+
+.. code-block:: python
+    for inv in x.investigations.search(base_flag("search", "ransomware")):
+        print(f"Incident related to ransomware: {inv.title}")
 
 
 relationship(...)
