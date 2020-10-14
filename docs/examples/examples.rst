@@ -145,12 +145,13 @@ The above snippet does the same thing looking for comments created at a timestam
 
 This example looks for comments created in past two days that start with “hey”. The window operator supports strings, integers and datetime objects.
 
-base_flag()
-"""""""""""
+flag()
+""""""
 Our API supports a custom query parameter called flag. Flag allows callers to pass variables to the backend. Flags are defined on a resource by resource basis, and will alter the behavior of a given API call. The most commonly used flag parameter will be "search" which will search investigative data in a highly optimized way.
 
 .. code-block:: python
-    for inv in x.investigations.search(base_flag("search", "ransomware")):
+
+    for inv in x.investigations.search(flag("search", "ransomware")):
         print(f"Incident related to ransomware: {inv.title}")
 
 
