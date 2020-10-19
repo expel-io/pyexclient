@@ -4829,7 +4829,7 @@ class WorkbenchCoreClient:
             self.token = 'Bearer %s' % self.token
 
         self.session.headers.update(
-            {'Authorization': self.token, 'User-Agent': os.path.dirname(__file__).split(os.path.sep)[-1]})
+            {'Authorization': self.token, 'User-Agent': os.path.dirname(__file__).split(os.path.sep)[-1], 'Accept-Encoding': 'gzip'})
 
     def login(self, username, password, code):
         '''
