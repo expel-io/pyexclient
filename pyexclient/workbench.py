@@ -4814,7 +4814,8 @@ class WorkbenchCoreClient:
         HTTPAdapter(max_retries=_make_retry())
 
         self.session = session
-        self.session.headers = {'content-type': 'application/json'}
+        self.session.headers = {'content-type': 'application/json',
+                                'User-Agent': os.path.dirname(__file__).split(os.path.sep)[-1], 'Accept-Encoding': 'gzip'}
 
         if self.apikey:
             self.token = self.service_login(self.apikey)
@@ -4828,8 +4829,7 @@ class WorkbenchCoreClient:
         if self.token and not self.token.startswith('Bearer'):
             self.token = 'Bearer %s' % self.token
 
-        self.session.headers.update(
-            {'Authorization': self.token, 'User-Agent': os.path.dirname(__file__).split(os.path.sep)[-1], 'Accept-Encoding': 'gzip'})
+        self.session.headers.update({'Authorization': self.token})
 
     def login(self, username, password, code):
         '''
