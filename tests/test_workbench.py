@@ -33,7 +33,7 @@ def get_url_from_request_mock(x):
 
 
 @pytest.fixture()
-def mock_pyexclient():
+def mock_client():
     with patch.object(WorkbenchClient, 'request') as mock_method:
         x = WorkbenchClient('', '', '')
         mock_method.return_value = Mock()
@@ -42,203 +42,203 @@ def mock_pyexclient():
         yield x
 
 
-def test_user_agent_set(mock_pyexclient):
-    assert mock_pyexclient.session.headers['User-Agent'] == 'pyexclient'
+def test_user_agent_set(mock_client):
+    assert mock_client.session.headers['User-Agent'] == 'pyexclient'
 
 
 class TestNotNullOperator:
-    def test_false(self, mock_pyexclient):
-        mock_pyexclient.investigations.search(close_comment=notnull(False))
-        result = get_url_from_request_mock(mock_pyexclient)
+    def test_false(self, mock_client):
+        mock_client.investigations.search(close_comment=notnull(False))
+        result = get_url_from_request_mock(mock_client)
         assert result == '/api/v2/investigations?filter[close_comment]=\u2400true&sort=+created_at&sort=+id'
 
-        mock_pyexclient.investigations.search(relationship('comments.comment', notnull(False)))
-        result = get_url_from_request_mock(mock_pyexclient)
+        mock_client.investigations.search(relationship('comments.comment', notnull(False)))
+        result = get_url_from_request_mock(mock_client)
         assert result == '/api/v2/investigations?filter[comments][comment]=\u2400true&sort=+created_at&sort=+id'
 
-    def test_true(self, mock_pyexclient):
-        mock_pyexclient.investigations.search(close_comment=notnull(True))
-        result = get_url_from_request_mock(mock_pyexclient)
+    def test_true(self, mock_client):
+        mock_client.investigations.search(close_comment=notnull(True))
+        result = get_url_from_request_mock(mock_client)
         assert result == '/api/v2/investigations?filter[close_comment]=\u2400false&sort=+created_at&sort=+id'
 
-        mock_pyexclient.investigations.search(relationship('comments.comment', notnull(True)))
-        result = get_url_from_request_mock(mock_pyexclient)
+        mock_client.investigations.search(relationship('comments.comment', notnull(True)))
+        result = get_url_from_request_mock(mock_client)
         assert result == '/api/v2/investigations?filter[comments][comment]=\u2400false&sort=+created_at&sort=+id'
 
-    def test_except(self, mock_pyexclient):
+    def test_except(self, mock_client):
         with pytest.raises(ValueError):
-            mock_pyexclient.investigations.search(close_comment=notnull(21123))
+            mock_client.investigations.search(close_comment=notnull(21123))
 
         with pytest.raises(ValueError):
-            mock_pyexclient.investigations.search(relationship('comments.comment', notnull(21123)))
+            mock_client.investigations.search(relationship('comments.comment', notnull(21123)))
 
 
 class TestIsNullOperator:
-    def test_false(self, mock_pyexclient):
-        mock_pyexclient.investigations.search(close_comment=isnull(False))
-        result = get_url_from_request_mock(mock_pyexclient)
+    def test_false(self, mock_client):
+        mock_client.investigations.search(close_comment=isnull(False))
+        result = get_url_from_request_mock(mock_client)
         assert result == '/api/v2/investigations?filter[close_comment]=\u2400false&sort=+created_at&sort=+id'
 
-        mock_pyexclient.investigations.search(relationship('comments.comment', isnull(False)))
-        result = get_url_from_request_mock(mock_pyexclient)
+        mock_client.investigations.search(relationship('comments.comment', isnull(False)))
+        result = get_url_from_request_mock(mock_client)
         assert result == '/api/v2/investigations?filter[comments][comment]=\u2400false&sort=+created_at&sort=+id'
 
-    def test_true(self, mock_pyexclient):
-        mock_pyexclient.investigations.search(close_comment=isnull(True))
-        result = get_url_from_request_mock(mock_pyexclient)
+    def test_true(self, mock_client):
+        mock_client.investigations.search(close_comment=isnull(True))
+        result = get_url_from_request_mock(mock_client)
         assert result == '/api/v2/investigations?filter[close_comment]=\u2400true&sort=+created_at&sort=+id'
 
-        mock_pyexclient.investigations.search(relationship('comments.comment', isnull(True)))
-        result = get_url_from_request_mock(mock_pyexclient)
+        mock_client.investigations.search(relationship('comments.comment', isnull(True)))
+        result = get_url_from_request_mock(mock_client)
         assert result == '/api/v2/investigations?filter[comments][comment]=\u2400true&sort=+created_at&sort=+id'
 
-    def test_except(self, mock_pyexclient):
+    def test_except(self, mock_client):
         with pytest.raises(ValueError):
-            mock_pyexclient.investigations.search(close_comment=isnull(21123))
+            mock_client.investigations.search(close_comment=isnull(21123))
 
         with pytest.raises(ValueError):
-            mock_pyexclient.investigations.search(relationship('comments.comment', isnull(21123)))
+            mock_client.investigations.search(relationship('comments.comment', isnull(21123)))
 
 
 class TestContainsOperator:
-    def test_none(self, mock_pyexclient):
-        mock_pyexclient.investigations.search(close_comment=contains())
-        result = get_url_from_request_mock(mock_pyexclient)
+    def test_none(self, mock_client):
+        mock_client.investigations.search(close_comment=contains())
+        result = get_url_from_request_mock(mock_client)
         assert result == '/api/v2/investigations?sort=+created_at&sort=+id'
 
-        mock_pyexclient.investigations.search(relationship('comments.comment', contains()))
-        result = get_url_from_request_mock(mock_pyexclient)
+        mock_client.investigations.search(relationship('comments.comment', contains()))
+        result = get_url_from_request_mock(mock_client)
         assert result == '/api/v2/investigations?sort=+created_at&sort=+id'
 
-    def test_values(self, mock_pyexclient):
-        mock_pyexclient.investigations.search(close_comment=contains('one', 'two'))
-        result = get_url_from_request_mock(mock_pyexclient)
+    def test_values(self, mock_client):
+        mock_client.investigations.search(close_comment=contains('one', 'two'))
+        result = get_url_from_request_mock(mock_client)
         assert result == '/api/v2/investigations?filter[close_comment]=:one&filter[close_comment]=:two&sort=+created_at&sort=+id'
 
-        mock_pyexclient.investigations.search(relationship('comments.comment', contains('one', 'two')))
-        result = get_url_from_request_mock(mock_pyexclient)
+        mock_client.investigations.search(relationship('comments.comment', contains('one', 'two')))
+        result = get_url_from_request_mock(mock_client)
         assert result == '/api/v2/investigations?filter[comments][comment]=:one&filter[comments][comment]=:two&sort=+created_at&sort=+id'
 
 
 class TestStartsWithOperator:
-    def test_values(self, mock_pyexclient):
-        mock_pyexclient.investigations.search(close_comment=startswith('one'))
-        result = get_url_from_request_mock(mock_pyexclient)
+    def test_values(self, mock_client):
+        mock_client.investigations.search(close_comment=startswith('one'))
+        result = get_url_from_request_mock(mock_client)
         assert result == '/api/v2/investigations?filter[close_comment]=^one&sort=+created_at&sort=+id'
 
-        mock_pyexclient.investigations.search(relationship('comments.comment', startswith('one')))
-        result = get_url_from_request_mock(mock_pyexclient)
+        mock_client.investigations.search(relationship('comments.comment', startswith('one')))
+        result = get_url_from_request_mock(mock_client)
         assert result == '/api/v2/investigations?filter[comments][comment]=^one&sort=+created_at&sort=+id'
 
 
 class TestNotEqualsOperator:
-    def test_none(self, mock_pyexclient):
-        mock_pyexclient.investigations.search(close_comment=neq())
-        result = get_url_from_request_mock(mock_pyexclient)
+    def test_none(self, mock_client):
+        mock_client.investigations.search(close_comment=neq())
+        result = get_url_from_request_mock(mock_client)
         assert result == '/api/v2/investigations?sort=+created_at&sort=+id'
 
-        mock_pyexclient.investigations.search(relationship('comments.comment', neq()))
-        result = get_url_from_request_mock(mock_pyexclient)
+        mock_client.investigations.search(relationship('comments.comment', neq()))
+        result = get_url_from_request_mock(mock_client)
         assert result == '/api/v2/investigations?sort=+created_at&sort=+id'
 
-    def test_values(self, mock_pyexclient):
-        mock_pyexclient.investigations.search(close_comment=neq('one', 'two'))
-        result = get_url_from_request_mock(mock_pyexclient)
+    def test_values(self, mock_client):
+        mock_client.investigations.search(close_comment=neq('one', 'two'))
+        result = get_url_from_request_mock(mock_client)
         assert result == '/api/v2/investigations?filter[close_comment]=!one&filter[close_comment]=!two&sort=+created_at&sort=+id'
 
-        mock_pyexclient.investigations.search(relationship('comments.comment', neq('one', 'two')))
-        result = get_url_from_request_mock(mock_pyexclient)
+        mock_client.investigations.search(relationship('comments.comment', neq('one', 'two')))
+        result = get_url_from_request_mock(mock_client)
         assert result == '/api/v2/investigations?filter[comments][comment]=!one&filter[comments][comment]=!two&sort=+created_at&sort=+id'
 
 
 class TestGreaterThanOperator:
-    def test_datetime(self, mock_pyexclient):
+    def test_datetime(self, mock_client):
         dt = datetime.datetime(2020, 1, 1)
 
-        mock_pyexclient.investigations.search(close_comment=gt(dt))
-        result = get_url_from_request_mock(mock_pyexclient)
+        mock_client.investigations.search(close_comment=gt(dt))
+        result = get_url_from_request_mock(mock_client)
         assert result == '/api/v2/investigations?filter[close_comment]=>2020-01-01T00:00:00&sort=+created_at&sort=+id'
 
-        mock_pyexclient.investigations.search(relationship('comments.comment', gt(dt)))
-        result = get_url_from_request_mock(mock_pyexclient)
+        mock_client.investigations.search(relationship('comments.comment', gt(dt)))
+        result = get_url_from_request_mock(mock_client)
         assert result == '/api/v2/investigations?filter[comments][comment]=>2020-01-01T00:00:00&sort=+created_at&sort=+id'
 
-    def test_other(self, mock_pyexclient):
-        mock_pyexclient.investigations.search(close_comment=gt(245))
-        result = get_url_from_request_mock(mock_pyexclient)
+    def test_other(self, mock_client):
+        mock_client.investigations.search(close_comment=gt(245))
+        result = get_url_from_request_mock(mock_client)
         assert result == '/api/v2/investigations?filter[close_comment]=>245&sort=+created_at&sort=+id'
 
-        mock_pyexclient.investigations.search(relationship('comments.comment', gt(245)))
-        result = get_url_from_request_mock(mock_pyexclient)
+        mock_client.investigations.search(relationship('comments.comment', gt(245)))
+        result = get_url_from_request_mock(mock_client)
         assert result == '/api/v2/investigations?filter[comments][comment]=>245&sort=+created_at&sort=+id'
 
 
 class TestLessThanOperator:
-    def test_datetime(self, mock_pyexclient):
+    def test_datetime(self, mock_client):
         dt = datetime.datetime(2020, 1, 1)
 
-        mock_pyexclient.investigations.search(close_comment=lt(dt))
-        result = get_url_from_request_mock(mock_pyexclient)
+        mock_client.investigations.search(close_comment=lt(dt))
+        result = get_url_from_request_mock(mock_client)
         assert result == '/api/v2/investigations?filter[close_comment]=<2020-01-01T00:00:00&sort=+created_at&sort=+id'
 
-        mock_pyexclient.investigations.search(relationship('comments.comment', lt(dt)))
-        result = get_url_from_request_mock(mock_pyexclient)
+        mock_client.investigations.search(relationship('comments.comment', lt(dt)))
+        result = get_url_from_request_mock(mock_client)
         assert result == '/api/v2/investigations?filter[comments][comment]=<2020-01-01T00:00:00&sort=+created_at&sort=+id'
 
-    def test_other(self, mock_pyexclient):
-        mock_pyexclient.investigations.search(close_comment=lt(245))
-        result = get_url_from_request_mock(mock_pyexclient)
+    def test_other(self, mock_client):
+        mock_client.investigations.search(close_comment=lt(245))
+        result = get_url_from_request_mock(mock_client)
         assert result == '/api/v2/investigations?filter[close_comment]=<245&sort=+created_at&sort=+id'
 
-        mock_pyexclient.investigations.search(relationship('comments.comment', lt(245)))
-        result = get_url_from_request_mock(mock_pyexclient)
+        mock_client.investigations.search(relationship('comments.comment', lt(245)))
+        result = get_url_from_request_mock(mock_client)
         assert result == '/api/v2/investigations?filter[comments][comment]=<245&sort=+created_at&sort=+id'
 
 
 class TestWindowOperator:
-    def test_datetimes(self, mock_pyexclient):
+    def test_datetimes(self, mock_client):
         dt_1 = datetime.datetime(2020, 1, 1)
         dt_2 = datetime.datetime(2020, 5, 1)
 
-        mock_pyexclient.investigations.search(close_comment=window(dt_1, dt_2))
-        result = get_url_from_request_mock(mock_pyexclient)
+        mock_client.investigations.search(close_comment=window(dt_1, dt_2))
+        result = get_url_from_request_mock(mock_client)
         assert result == '/api/v2/investigations?filter[close_comment]=>2020-01-01T00:00:00&filter[close_comment]=<2020-05-01T00:00:00&sort=+created_at&sort=+id'
 
-        mock_pyexclient.investigations.search(relationship('comments.comment', window(dt_1, dt_2)))
-        result = get_url_from_request_mock(mock_pyexclient)
+        mock_client.investigations.search(relationship('comments.comment', window(dt_1, dt_2)))
+        result = get_url_from_request_mock(mock_client)
         assert result == '/api/v2/investigations?filter[comments][comment]=>2020-01-01T00:00:00&filter[comments][comment]=<2020-05-01T00:00:00&sort=+created_at&sort=+id'
 
-    def test_other(self, mock_pyexclient):
-        mock_pyexclient.investigations.search(close_comment=window(100, 500))
-        result = get_url_from_request_mock(mock_pyexclient)
+    def test_other(self, mock_client):
+        mock_client.investigations.search(close_comment=window(100, 500))
+        result = get_url_from_request_mock(mock_client)
         assert result == '/api/v2/investigations?filter[close_comment]=>100&filter[close_comment]=<500&sort=+created_at&sort=+id'
 
-        mock_pyexclient.investigations.search(relationship('comments.comment', window(100, 500)))
-        result = get_url_from_request_mock(mock_pyexclient)
+        mock_client.investigations.search(relationship('comments.comment', window(100, 500)))
+        result = get_url_from_request_mock(mock_client)
         assert result == '/api/v2/investigations?filter[comments][comment]=>100&filter[comments][comment]=<500&sort=+created_at&sort=+id'
 
 
 class TestFlagOperator:
-    def test_value(self, mock_pyexclient):
-        mock_pyexclient.investigations.search(close_comment=flag('test'))
-        result = get_url_from_request_mock(mock_pyexclient)
+    def test_value(self, mock_client):
+        mock_client.investigations.search(close_comment=flag('test'))
+        result = get_url_from_request_mock(mock_client)
         assert result == '/api/v2/investigations?flag[close_comment]=test&sort=+created_at&sort=+id'
 
 
 class TestrelationshipOperator:
-    def test_init_except(self, mock_pyexclient):
+    def test_init_except(self, mock_client):
         too_long = 'comment.comment.comment'
         with pytest.raises(ValueError):
             relationship(too_long, '')
 
-    def test_no_rels(self, mock_pyexclient):
+    def test_no_rels(self, mock_client):
         rel = relationship('comment.comment', '')
         with pytest.raises(ValueError) as e:
             rel.create_query_filters()
 
         assert str(e.value) == 'Relationship operator has no class relationships defined'
 
-    def test_relationship_does_not_exist(self, mock_pyexclient):
+    def test_relationship_does_not_exist(self, mock_client):
         rel = relationship('something.not_existing', '')
         rel.rels = ['one', 'two']
         with pytest.raises(ValueError) as e:
@@ -246,7 +246,7 @@ class TestrelationshipOperator:
 
         assert 'not a defined relationship' in str(e.value)
 
-    def test_create_operator(self, mock_pyexclient):
+    def test_create_operator(self, mock_client):
         rel = relationship('comments.comment', window(123, 456))
         rel.rels = ['comments']
 
@@ -254,7 +254,7 @@ class TestrelationshipOperator:
         assert result == [('filter[comments][comment]', '>123'),
                           ('filter[comments][comment]', '<456')]
 
-    def test_create_value(self, mock_pyexclient):
+    def test_create_value(self, mock_client):
         rel = relationship('comments.comment', 'some value')
         rel.rels = ['comments']
 
@@ -263,53 +263,53 @@ class TestrelationshipOperator:
 
 
 class TestLimitOperator:
-    def test_value(self, mock_pyexclient):
-        mock_pyexclient.investigations.search(limit(5))
-        result = get_url_from_request_mock(mock_pyexclient)
+    def test_value(self, mock_client):
+        mock_client.investigations.search(limit(5))
+        result = get_url_from_request_mock(mock_client)
         assert result == '/api/v2/investigations?page[limit]=5&sort=+created_at&sort=+id'
 
 
 class TestIncludeOperator:
-    def test_value(self, mock_pyexclient):
-        mock_pyexclient.investigations.search(include('organization,created_by,updated_by'))
-        result = get_url_from_request_mock(mock_pyexclient)
+    def test_value(self, mock_client):
+        mock_client.investigations.search(include('organization,created_by,updated_by'))
+        result = get_url_from_request_mock(mock_client)
         assert result == '/api/v2/investigations?include=organization,created_by,updated_by&sort=+created_at&sort=+id'
 
 
 class TestSortOperator:
-    def test_default(self, mock_pyexclient):
-        mock_pyexclient.investigations.search()
-        result = get_url_from_request_mock(mock_pyexclient)
+    def test_default(self, mock_client):
+        mock_client.investigations.search()
+        result = get_url_from_request_mock(mock_client)
         assert result == '/api/v2/investigations?sort=+created_at&sort=+id'
 
-        mock_pyexclient.investigations.search(sort('created_at'))
-        result = get_url_from_request_mock(mock_pyexclient)
+        mock_client.investigations.search(sort('created_at'))
+        result = get_url_from_request_mock(mock_client)
         assert result == '/api/v2/investigations?sort=+created_at'
 
-    def test_asc(self, mock_pyexclient):
-        mock_pyexclient.investigations.search(sort('created_at', '+'))
-        result = get_url_from_request_mock(mock_pyexclient)
+    def test_asc(self, mock_client):
+        mock_client.investigations.search(sort('created_at', '+'))
+        result = get_url_from_request_mock(mock_client)
         assert result == '/api/v2/investigations?sort=+created_at'
 
-        mock_pyexclient.investigations.search(sort('created_at', 'asc'))
-        result = get_url_from_request_mock(mock_pyexclient)
+        mock_client.investigations.search(sort('created_at', 'asc'))
+        result = get_url_from_request_mock(mock_client)
         assert result == '/api/v2/investigations?sort=+created_at'
 
-    def test_desc(self, mock_pyexclient):
-        mock_pyexclient.investigations.search(sort('created_at', '-'))
-        result = get_url_from_request_mock(mock_pyexclient)
+    def test_desc(self, mock_client):
+        mock_client.investigations.search(sort('created_at', '-'))
+        result = get_url_from_request_mock(mock_client)
         assert result == '/api/v2/investigations?sort=-created_at'
 
-        mock_pyexclient.investigations.search(sort('created_at', 'desc'))
-        result = get_url_from_request_mock(mock_pyexclient)
+        mock_client.investigations.search(sort('created_at', 'desc'))
+        result = get_url_from_request_mock(mock_client)
         assert result == '/api/v2/investigations?sort=-created_at'
 
-    def test_multiple(self, mock_pyexclient):
-        mock_pyexclient.investigations.search(sort('created_at', '-'), sort('id', '+'), sort('closed_at', '-'))
-        result = get_url_from_request_mock(mock_pyexclient)
+    def test_multiple(self, mock_client):
+        mock_client.investigations.search(sort('created_at', '-'), sort('id', '+'), sort('closed_at', '-'))
+        result = get_url_from_request_mock(mock_client)
         assert result == '/api/v2/investigations?sort=-created_at&sort=+id&sort=-closed_at'
 
-    def test_value_error(self, mock_pyexclient):
+    def test_value_error(self, mock_client):
         with pytest.raises(ValueError):
             sort('field', 12341434)
 
@@ -325,31 +325,31 @@ class TestIsOperator:
 
 
 class TestBaseResourceObject:
-    def test_make_url(self, mock_pyexclient):
-        result = mock_pyexclient.investigations.make_url(
+    def test_make_url(self, mock_client):
+        result = mock_client.investigations.make_url(
             'investigations')
         assert result == '/api/v2/investigations'
 
-        result = mock_pyexclient.investigations.make_url(
+        result = mock_client.investigations.make_url(
             'investigations', value='56f00b9b-8fdf-4f7d-aca0-de431f7f50e6')
         assert result == '/api/v2/investigations/56f00b9b-8fdf-4f7d-aca0-de431f7f50e6'
 
-        result = mock_pyexclient.investigations.make_url(
+        result = mock_client.investigations.make_url(
             'investigations', value='56f00b9b-8fdf-4f7d-aca0-de431f7f50e6',
             relation='investigative_actions')
         assert result == '/api/v2/investigations/56f00b9b-8fdf-4f7d-aca0-de431f7f50e6/investigative_actions'
 
-        result = mock_pyexclient.investigations.make_url(
+        result = mock_client.investigations.make_url(
             'investigations', value='56f00b9b-8fdf-4f7d-aca0-de431f7f50e6',
             relation='investigative_actions', relationship=True)
         assert result == '/api/v2/investigations/56f00b9b-8fdf-4f7d-aca0-de431f7f50e6/relationships/investigative_actions'
 
-    def test_fetch_page(self, mock_pyexclient, raw_investigation_dict):
-        mock_pyexclient.request.return_value.json.return_value = {
+    def test_fetch_page(self, mock_client, raw_investigation_dict):
+        mock_client.request.return_value.json.return_value = {
             'data': [raw_investigation_dict for _ in range(3)],
             'included': [raw_investigation_dict for _ in range(3)]
         }
-        result = mock_pyexclient.investigations._fetch_page('test_url')
+        result = mock_client.investigations._fetch_page('test_url')
         assert len(result['data']) == 3
         assert len(result['included']) == 3
 
@@ -359,45 +359,45 @@ class TestBaseResourceObject:
             assert isinstance(inv, Investigations)
 
         # test not list -> list conversion
-        mock_pyexclient.request.return_value.json.return_value = {'data': raw_investigation_dict}
-        result = mock_pyexclient.investigations._fetch_page('test_url')
+        mock_client.request.return_value.json.return_value = {'data': raw_investigation_dict}
+        result = mock_client.investigations._fetch_page('test_url')
         assert len(result['data']) == 1
         assert isinstance(result['data'], list)
         assert isinstance(result['data'][0], Investigations)
         assert len(result['included']) == 0
 
-    def test_filter_by(self, mock_pyexclient, raw_investigation_dict):
-        mock_pyexclient.request.return_value.json.side_effect = [
+    def test_filter_by(self, mock_client, raw_investigation_dict):
+        mock_client.request.return_value.json.side_effect = [
             {'data': [raw_investigation_dict for _ in range(3)], 'links': {'next': 'aaa'}},
             {'data': [raw_investigation_dict for _ in range(3)], 'links': {'next': 'bbb'}},
             {'data': [raw_investigation_dict for _ in range(3)]},
         ]
         invs = []
-        for inv in mock_pyexclient.investigations.filter_by():
+        for inv in mock_client.investigations.filter_by():
             invs.append(inv)
             assert isinstance(inv, Investigations)
             assert inv._id == 'e12da56a-1111-1111-9b73-111ba6852193'
         assert len(invs) == 9
 
-    def test_search_complex_args(self, mock_pyexclient):
+    def test_search_complex_args(self, mock_client):
         args = [
             relationship('investigation.created_at', gt(datetime.datetime(2020, 1, 1))),
             relationship('investigation.created_at', lt(datetime.datetime(2020, 5, 1))),
-            relationship('investigation.organization_id', ORGANIZATION_ID)
+            relationship('investigation.organization.id', ORGANIZATION_ID)
         ]
         kwargs = {
             'action_types': 'MANUAL',
 
         }
-        mock_pyexclient.investigative_actions.search(*args, **kwargs)
-        result = get_url_from_request_mock(mock_pyexclient)
+        mock_client.investigative_actions.search(*args, **kwargs)
+        result = get_url_from_request_mock(mock_client)
         assert result == '/api/v2/investigative_actions?filter[investigation][created_at]=>2020-01-01T00:00:00&filter[investigation][created_at]=<2020-05-01T00:00:00&filter[investigation][organization][id]=11111111-1111-1111-1111-111111111111&filter[action_types]=MANUAL&sort=+created_at&sort=+id'
 
-    def test_search_more_complex_args(self, mock_pyexclient):
+    def test_search_more_complex_args(self, mock_client):
         args = [
             relationship('investigation.created_at', gt(datetime.datetime(2020, 1, 1))),
             relationship('investigation.created_at', lt(datetime.datetime(2020, 5, 1))),
-            relationship('investigation.organization_id', ORGANIZATION_ID),
+            relationship('investigation.organization.id', ORGANIZATION_ID),
             sort('created_at')
         ]
         kwargs = {
@@ -405,95 +405,95 @@ class TestBaseResourceObject:
             'some_count': gt(25),
             'some_other_count': window(1, 5)
         }
-        mock_pyexclient.investigative_actions.search(*args, **kwargs)
-        result = get_url_from_request_mock(mock_pyexclient)
+        mock_client.investigative_actions.search(*args, **kwargs)
+        result = get_url_from_request_mock(mock_client)
         assert result == '/api/v2/investigative_actions?filter[investigation][created_at]=>2020-01-01T00:00:00&filter[investigation][created_at]=<2020-05-01T00:00:00&filter[investigation][organization][id]=11111111-1111-1111-1111-111111111111&sort=+created_at&filter[action_types]=MANUAL&filter[some_count]=>25&filter[some_other_count]=>1&filter[some_other_count]=<5'
 
-    def test_search_sort(self, mock_pyexclient):
-        mock_pyexclient.investigative_actions.search(sort('some_timestamp', '-'))
-        result = get_url_from_request_mock(mock_pyexclient)
+    def test_search_sort(self, mock_client):
+        mock_client.investigative_actions.search(sort('some_timestamp', '-'))
+        result = get_url_from_request_mock(mock_client)
         assert result == '/api/v2/investigative_actions?sort=-some_timestamp'
 
-    def test_search_default_sort(self, mock_pyexclient):
-        mock_pyexclient.investigative_actions.search()
-        result = get_url_from_request_mock(mock_pyexclient)
+    def test_search_default_sort(self, mock_client):
+        mock_client.investigative_actions.search()
+        result = get_url_from_request_mock(mock_client)
         assert result == '/api/v2/investigative_actions?sort=+created_at&sort=+id'
 
-    def test_search_arg_except(self, mock_pyexclient):
+    def test_search_arg_except(self, mock_client):
         with pytest.raises(ValueError):
-            mock_pyexclient.investigative_actions.search('something')
+            mock_client.investigative_actions.search('something')
 
-    def test_count(self, mock_pyexclient, raw_investigation_dict):
-        mock_pyexclient.request.return_value.json.return_value = {'meta': {'page': {'total': 57}}}
-        assert mock_pyexclient.investigations.count() == 57
+    def test_count(self, mock_client, raw_investigation_dict):
+        mock_client.request.return_value.json.return_value = {'meta': {'page': {'total': 57}}}
+        assert mock_client.investigations.count() == 57
 
-        mock_pyexclient.request.return_value.json.side_effect = [
+        mock_client.request.return_value.json.side_effect = [
             {'data': [raw_investigation_dict for _ in range(3)], 'meta': {'page': {'total': 100}}}
         ]
-        result = mock_pyexclient.investigations.search().count()
+        result = mock_client.investigations.search().count()
         assert result == 100
 
-    def test_one_or_none(self, mock_pyexclient, raw_investigation_dict):
-        mock_pyexclient.request.return_value.json.return_value = {}
-        assert mock_pyexclient.investigations.one_or_none() is None
+    def test_one_or_none(self, mock_client, raw_investigation_dict):
+        mock_client.request.return_value.json.return_value = {}
+        assert mock_client.investigations.one_or_none() is None
 
-        mock_pyexclient.request.return_value.json.return_value = {'data': raw_investigation_dict}
-        result = mock_pyexclient.investigations.one_or_none()
+        mock_client.request.return_value.json.return_value = {'data': raw_investigation_dict}
+        result = mock_client.investigations.one_or_none()
         assert isinstance(result, Investigations)
 
-    def test_get_exceptions(self, mock_pyexclient):
+    def test_get_exceptions(self, mock_client):
         with pytest.raises(ValueError) as e:
-            mock_pyexclient.investigations.get(**{'not': 'an id'})
+            mock_client.investigations.get(**{'not': 'an id'})
         assert str(e.value) == 'Expected `id` argument in get call'
 
         with pytest.raises(ValueError) as e:
-            mock_pyexclient.investigations.get(**{'id': 'args', 'many more': 'args'})
+            mock_client.investigations.get(**{'id': 'args', 'many more': 'args'})
         assert str(e.value) == 'Expected a single argument `id` in get call'
 
-    def test_get(self, mock_pyexclient, raw_investigation_dict):
-        mock_pyexclient.request.return_value.json.return_value = {'data': raw_investigation_dict}
-        inv = mock_pyexclient.investigations.get(id='e12da56a-1111-1111-9b73-111ba6852193')
+    def test_get(self, mock_client, raw_investigation_dict):
+        mock_client.request.return_value.json.return_value = {'data': raw_investigation_dict}
+        inv = mock_client.investigations.get(id='e12da56a-1111-1111-9b73-111ba6852193')
         assert isinstance(inv, Investigations)
         assert inv._create is False
 
-    def test_iter_no_next(self, mock_pyexclient, raw_investigation_dict):
-        mock_pyexclient.request.return_value.json.side_effect = [
+    def test_iter_no_next(self, mock_client, raw_investigation_dict):
+        mock_client.request.return_value.json.side_effect = [
             {'data': [raw_investigation_dict for _ in range(3)]}
         ]
         invs = []
-        for inv in mock_pyexclient.investigations:
+        for inv in mock_client.investigations:
             invs.append(inv)
             assert isinstance(inv, Investigations)
             assert inv._id == 'e12da56a-1111-1111-9b73-111ba6852193'
         assert len(invs) == 3
 
-    def test_iter_no_content(self, mock_pyexclient, raw_investigation_dict):
-        mock_pyexclient.request.return_value.json.side_effect = [
+    def test_iter_no_content(self, mock_client, raw_investigation_dict):
+        mock_client.request.return_value.json.side_effect = [
             {'data': [raw_investigation_dict for _ in range(3)], 'links': {'next': 'aaa'}},
             {'data': [raw_investigation_dict for _ in range(3)], 'links': {'next': 'bbb'}},
             {'data': [raw_investigation_dict for _ in range(3)]},
         ]
         invs = []
-        for inv in mock_pyexclient.investigations:
+        for inv in mock_client.investigations:
             invs.append(inv)
             assert isinstance(inv, Investigations)
             assert inv._id == 'e12da56a-1111-1111-9b73-111ba6852193'
         assert len(invs) == 9
 
-    def test_iter_content(self, mock_pyexclient, raw_investigation_dict):
-        mock_pyexclient.request.return_value.json.side_effect = [
+    def test_iter_content(self, mock_client, raw_investigation_dict):
+        mock_client.request.return_value.json.side_effect = [
             {'data': [raw_investigation_dict for _ in range(3)], 'links': {'next': 'aaa'}},
             {'data': [raw_investigation_dict for _ in range(3)], 'links': {'next': 'bbb'}},
             {'data': [raw_investigation_dict for _ in range(3)]},
         ]
         invs = []
-        for inv in mock_pyexclient.investigations.filter_by():
+        for inv in mock_client.investigations.filter_by():
             invs.append(inv)
             assert isinstance(inv, Investigations)
             assert inv._id == 'e12da56a-1111-1111-9b73-111ba6852193'
         assert len(invs) == 9
 
-        mock_pyexclient.request.return_value.json.side_effect = [
+        mock_client.request.return_value.json.side_effect = [
             {'data': [raw_investigation_dict for _ in range(3)],
              'included': [raw_investigation_dict for _ in range(3)], 'links': {'next': 'aaa'}},
             {'data': [raw_investigation_dict for _ in range(3)],
@@ -502,14 +502,14 @@ class TestBaseResourceObject:
              'included': [raw_investigation_dict for _ in range(3)]},
         ]
         invs = []
-        for inv in mock_pyexclient.investigations.filter_by():
+        for inv in mock_client.investigations.filter_by():
             invs.append(inv)
             assert isinstance(inv, Investigations)
             assert inv._id == 'e12da56a-1111-1111-9b73-111ba6852193'
         assert len(invs) == 18
 
-    def test_create(self, mock_pyexclient, raw_investigation_dict):
-        inv = mock_pyexclient.investigations.create(**raw_investigation_dict['attributes'])
+    def test_create(self, mock_client, raw_investigation_dict):
+        inv = mock_client.investigations.create(**raw_investigation_dict['attributes'])
         assert isinstance(inv, Investigations)
         assert inv._create is True
 

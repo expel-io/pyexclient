@@ -50,7 +50,7 @@ def main():
     start_at = dt_parser.parse(args.start_at)
     end_at = dt_parser.parse(args.end_at)
     print("Querying Expel Alerts for date range: {start} - {end}".format(start=start_at.isoformat(), end=end_at.isoformat()))
-    expel_alerts = xc.expel_alerts.search(window("created_at",start_at, end_at))
+    expel_alerts = xc.expel_alerts.search(created_at=window(start_at, end_at))
 
     csv_columns = ['alert_at', 'alert_type', 'expel_severity', 'expel_name', 'expel_message', 'status', 'close_reason', 'close_comment', 'vendor_name']
     csv_rows = list()
