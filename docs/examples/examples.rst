@@ -140,7 +140,7 @@ The above snippet does the same thing looking for comments created at a timestam
     start_dt = (datetime.datetime.now()-datetime.timedelta(days=3)).isoformat()
     end_date = (datetime.datetime.now()-datetime.timedelta(days=1)).isoformat()
 
-    for cmt in x.comments.search(window("created_at", start_dt, end_date), comment=startswith("hey")):
+    for cmt in x.comments.search(created_at=window(start_dt, end_date), comment=startswith("hey")):
          print(f"Found comment in past 2 days that starts with hey ‘{cmt.comment}’")
 
 This example looks for comments created in past two days that start with “hey”. The window operator supports strings, integers and datetime objects.
@@ -153,6 +153,17 @@ Our API supports a custom query parameter called flag. Flag allows callers to pa
 
     for inv in x.investigations.search(flag("search", "ransomware")):
         print(f"Incident related to ransomware: {inv.title}")
+
+limit()
+"""""""
+The API supports a limit operator that will limit the number of results returned by the server. This can be used when you you are calling an API and you only need, or care about one result.
+
+.. code-block:: python
+
+    for inv in x.investigations.search(flag("search", "ransomware"), limit(1)):
+        print(f"Incident related to ransomware: {inv.title}")
+
+
 
 
 relationship(...)
