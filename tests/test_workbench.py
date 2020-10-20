@@ -574,7 +574,7 @@ class TestResourceInstance:
     ('y', None, True),
     ('n', None, False),
 ])
-@patch('xclient.workbench.logger', Mock())
+@patch('pyexclient.workbench.logger', Mock())
 def test_delete_prompt_answer(answer, exc_msg, prompt_on_delete):
     '''
     Test that we prompt on delete, we raise if we dont get corret prompt on delete, and we don't raise when user expected delete
