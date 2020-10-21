@@ -5,7 +5,7 @@
   <p align="center">
     A Python client for the Expel Workbench.
     <br />
-    <a href="READTHEDOCS"><strong>Explore the docs »</strong></a>
+    <a href="https://pyexclient.readthedocs.io"><strong>Explore the docs »</strong></a>
     <br />
     <br />
     <a href="https://github.com/expel-io/pyexclient/issues">Report Bug</a>
@@ -94,7 +94,7 @@ for inv in wb.investigations:
     print(inv)
 ```
 
-_For more examples (we have a ton!), please refer to the [Documentation](READTHEDOCS). As a starting point, check out [Code Snippets](READTHEDOCS) and [Example Scripts](READTHEDOCS)._
+_For more examples (we have a ton!), please refer to the [Documentation](https://pyexclient.readthedocs.io). As a starting point, check out [Code Snippets](READTHEDOCS) and [Example Scripts](READTHEDOCS)._
 
 
 <!-- ISSUES -->

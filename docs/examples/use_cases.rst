@@ -40,7 +40,7 @@ that are not currently completed or closed. You can optionally specifiy a date r
      :language: python
      :caption:  examples/open_remediation_actions.py
      :name: open_remediation_actions.py
-     :lines: 25-38
+     :lines: 42-61
      :dedent: 4
 
 .. _snippet device name:
