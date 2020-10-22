@@ -142,7 +142,7 @@ Alternatively, you could search for all automatic actions to acquire a file like
 .. _snippet top investigative actions:
 
 Snippet: Find top automatic Investigative Actions
----------------------------------------
+-------------------------------------------------
 
 Find the top 10 automatic investigative actions by number of times they are issued.
 
@@ -200,7 +200,7 @@ Update an investigation’s state by closing it. Note that setting an investigat
 .. _snippet create investigation findings:
 
 Snippet: Creating findings for an incident
-----------------------------------------
+------------------------------------------
 
 Create new investigative findings for an incident.
 

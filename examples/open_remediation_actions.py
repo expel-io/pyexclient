@@ -43,7 +43,7 @@ def main():
 
     # Search remediation actions where the status is not equal to CLOSED or COMPLETED, and optionally it was created within the window of start_date and end_date.
     # start and end date's can be None in which case the search will look at all remediation actions.
-    for rem in xc.remediation_actions.search(window('created_at', start_date, end_date), relationship("investigation.organization_id", '9a5434c2-66b8-49e3-a544-6e8797f4a1d3'), status=neq('COMPLETED', 'CLOSED')):
+    for rem in xc.remediation_actions.search(created_at=window(start_date, end_date), status=neq('COMPLETED', 'CLOSED')):
         # Calculate the number of days since the remediation action was created.
         since = (datetime.datetime.now() - datetime.datetime.strptime(rem.created_at, "%Y-%m-%dT%H:%M:%S.%fZ")).days
         # print message to console

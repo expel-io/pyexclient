@@ -12,6 +12,12 @@ jobs:
   lint:
     runs-on: ubuntu-latest
     steps:
+    - uses: actions/checkout@v2
+    - name: sanity check
+      run: "! grep -q judy $GITHUB_WORKSPACE/pyexclient/workbench.py"
+    - name: failed sanity check
+      if: ${{ failure() }}
+      run: exit 1
     - name: run linter
       uses: github/super-linter@v3
       env:
