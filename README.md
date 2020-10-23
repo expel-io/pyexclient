@@ -94,7 +94,7 @@ for inv in wb.investigations:
     print(inv)
 ```
 
-_For more examples (we have a ton!), please refer to the [Documentation](https://pyexclient.readthedocs.io). As a starting point, check out [Code Snippets](READTHEDOCS) and [Example Scripts](READTHEDOCS)._
+_For more examples (we have a ton!), please refer to the [Documentation](https://pyexclient.readthedocs.io). As a starting point, check out [Code Snippets](https://pyexclient.readthedocs.io/en/latest/examples/examples.html) and [Example Scripts](https://github.com/expel-io/pyexclient/tree/main/examples)._
 
 
 <!-- ISSUES -->
