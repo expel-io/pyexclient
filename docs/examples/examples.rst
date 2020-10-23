@@ -297,13 +297,15 @@ Examples
 --------
 We've provided examples based on what we’ve heard about from customers who are wanting to further integrate with our platform. There are three types of examples we've documented.
 
-1. Snippet - This is code self contained in the documentation. Usually just a few lines.
-2. Script - This is a whole python script that accomplishes the use cases. A brief description on each script is provided. The scripts themselves are in examples/ directory. 
-3. Notebook - A jupyter notebook that implements, mostly experimental concepts that forward leaning customers might be interested in. 
+1. :ref:`Snippet <snippets>` - This is code self contained in the documentation. Usually just a few lines.
+2. :ref:`Script <scripts>` - This is a whole python script that accomplishes the use cases. A brief description on each script is provided. The scripts themselves are in examples/ directory. 
+3. :ref:`Notebook <notebooks>` - A jupyter notebook that implements, mostly experimental concepts that forward leaning customers might be interested in. 
 
 
 .. toctree::
    :maxdepth: 2
 
-   use_cases
+   snippets
+   scripts 
+   notebooks
 
