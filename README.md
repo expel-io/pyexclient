@@ -50,7 +50,7 @@ Pyexclient requires `python>=3.7`.
 To install Pyexclient, use pip.
 
 ```sh
-pip install pyexclient
+pip3 install pyexclient
 ```
 
 
