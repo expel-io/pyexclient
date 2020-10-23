@@ -4,7 +4,7 @@ Getting Started
 ===============
 There’s one precondition to using pyexclient: you must have a Workbench user account. This means you need to be a customer or going through a POC with Expel. 
 
-If you have an Expel Workbench account, you can authenticate to :ref:`Expel using MFA <snippet auth>` Expel using MFA or you can request an API key. 
+If you have an Expel Workbench account, you can authenticate to :ref:`Expel using MFA <snippet auth>` or you can request an API key. 
 
 
 Requesting an API key
