@@ -1,3 +1,5 @@
+pyexclient documentation
+=================================
 
 .. toctree::
    :maxdepth: 2
