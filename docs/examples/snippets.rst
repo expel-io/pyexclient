@@ -90,7 +90,7 @@ Iterate over all the investigations and print their title and status.
 
     for inv in xc.investigations:
         s = "Investigation ID: {inv_id} Title: {inv_title} Status: {inv_status}"
-        status = "OPEN" if inv.close_comment is not None else "CLOSED"
+        status = "OPEN" if inv.decision is not None else "CLOSED"
         print(s.format(inv_id=inv.id, inv_title=inv.title, inv_status=status))
 
 .. _snippet list comments:
@@ -181,7 +181,7 @@ List open investigations in Workbench.
 
     from pyexclient.workbench import notnull
 
-    for inv in xc.investigations.search(close_comment=notnull()):
+    for inv in xc.investigations.search(decision=notnull()):
         print(inv)
 
 .. _snippet close investigation:
@@ -189,11 +189,12 @@ List open investigations in Workbench.
 Snippet: Close an investigation
 -------------------------------
 
-Update an investigation’s state by closing it. Note that setting an investigation's close comment to anything other than None will close it.
+Update an investigation’s state by closing it. Note that setting an investigation's decision to anything other than None will close it.
 
 .. code-block:: python
 
     with xc.investigations.get(id='my-investigation-id') as inv:
+        inv.decision = "FALSE_POSITIVE"
         inv.close_comment = "This is a false positive."
 
 .. _snippet create investigation findings:
