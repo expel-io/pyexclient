@@ -26,6 +26,12 @@ To authenticate with an api key:
 .. code-block:: python
 
     xc = WorkbenchClient('https://workbench.expel.io', apikey='apikey')
+    
+To authenticate with a token:
+
+.. code-block:: python
+
+    xc = WorkbenchClient('https://workbench.expel.io', token='apikey')
 
 .. _snippet list remediation:
 
