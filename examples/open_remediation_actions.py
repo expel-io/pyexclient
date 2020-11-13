@@ -5,13 +5,13 @@ import getpass
 from pyexclient.workbench import WorkbenchClient, relationship, neq, window
 
 
-def make_wb_client(username=None, api_key=None):
+def make_wb_client(username=None, api_token=None):
     '''
     Create a WorkbenchClient class, that is authenticated. Based on arguments provided, the method will
-    prompt for password and mfa token, or just use the api key.
+    prompt for password and mfa token, or just use the api token.
     '''
-    if username is None and api_key is None:
-        raise Exception("Error: You must provide either a username or an api key!")
+    if username is None and api_token is None:
+        raise Exception("Error: You must provide either a username or an api token!")
 
     if username is not None:
         return WorkbenchClient('https://workbench.expel.io',
@@ -19,20 +19,20 @@ def make_wb_client(username=None, api_key=None):
                     password=getpass.getpass("Please enter your password: "),
                     mfa_code=input("Please enter your MFA token: "))
 
-    return WorkbenchClient('https://workbench.expel.io', apikey=api_key)
+    return WorkbenchClient('https://workbench.expel.io', token=api_token)
 
 
 def main():
     parser = argparse.ArgumentParser(description="List open remediation actions")
     parser.add_argument('-u', '--username', help='Expel username')
-    parser.add_argument('-a', '--api-key', help='API Key')
+    parser.add_argument('-a', '--api-token', help='API Token')
     parser.add_argument('-s', '--start-date', help='Start date in format of YYYY-MM-DD')
     parser.add_argument('-e', '--end-date', help='End date in format of YYYY-MM-DD')
     args = parser.parse_args()
 
     start_date = end_date = None
 
-    xc = make_wb_client(username=args.username, api_key=args.api_key)
+    xc = make_wb_client(username=args.username, api_token=args.api_token)
     if args.start_date:
         start_date = datetime.datetime.strptime(args.start_date, '%Y-%m-%d')
 
