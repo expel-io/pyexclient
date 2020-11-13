@@ -19,7 +19,7 @@ def make_wb_client(username=None, api_key=None):
                     password=getpass.getpass("Please enter your password: "),
                     mfa_code=input("Please enter your MFA token: "))
 
-    return WorkbenchClient('https://workbench.expel.io', apikey=api_key)
+    return WorkbenchClient('https://workbench.expel.io', token=api_key)
 
 
 def main():

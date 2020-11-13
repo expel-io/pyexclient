@@ -81,7 +81,7 @@ from pyexclient import WorkbenchClient
 
 wb = WorkbenchClient(
         'https://workbench.expel.io',
-        apikey=getpass.getpass("API Key: ")
+        token=getpass.getpass("API Token: ")
     )
 ```
 

@@ -56,7 +56,7 @@ def auth_workbench():
     Prompt user for authentication info
     '''
     if os.environ.get('WORKBENCH_API_KEY'):
-        return WorkbenchClient('https://workbench.expel.io', apikey=os.environ['WORKBENCH_API_KEY'])
+        return WorkbenchClient('https://workbench.expel.io', token=os.environ['WORKBENCH_API_KEY'])
     print('''Warning! No api key found in WORKBENCH_API_KEY environment variable.
 Prompting for user auth...
 Note, your session will expire! Use an API key for long running scripts.''')
