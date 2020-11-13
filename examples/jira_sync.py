@@ -20,7 +20,7 @@ Environment Variables:
     JIRA_SERVER = URL for your Jira server
     JIRA_USERNAME = Your Jira User name
     JIRA_API_KEY = Your Jira API key
-    WORKBENCH_API_KEY = Your Workbench API key
+    WORKBENCH_API_TOKEN = Your Workbench API token
 
 Requirements:
     jira
@@ -56,7 +56,7 @@ def auth_workbench():
     Prompt user for authentication info
     '''
     if os.environ.get('WORKBENCH_API_KEY'):
-        return WorkbenchClient('https://workbench.expel.io', token=os.environ['WORKBENCH_API_KEY'])
+        return WorkbenchClient('https://workbench.expel.io', token=os.environ['WORKBENCH_API_TOKEN'])
     print('''Warning! No api key found in WORKBENCH_API_KEY environment variable.
 Prompting for user auth...
 Note, your session will expire! Use an API key for long running scripts.''')
