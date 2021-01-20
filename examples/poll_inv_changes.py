@@ -65,13 +65,18 @@ def get_inv_changes(xc, since):
 def main():
     xc = authenticate()
 
+    # start looking for changes since 5 minutes ago
+    since = datetime.now() - timedelta(minutes=5)
+
     while True:
-        since = datetime.now() - timedelta(minutes=5)
         print("Querying device status since: {since}".format(since=since))
 
+        now = datetime.now()
         for change in get_inv_changes(xc, since):
             pprint.pprint(change)
 
+        # next time, search for changes since last poll
+        since = now
         time.sleep(60)
 
 if __name__ == '__main__':
