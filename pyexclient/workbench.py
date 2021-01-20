@@ -953,6 +953,11 @@ class ResourceInstance:
         attrs['id'] = self._id
         return pprint.pformat(attrs)
 
+    def to_json(self):
+        attrs = copy.deepcopy(self._attrs)
+        attrs['id'] = self._id
+        return json.dumps(attrs)
+
     @property
     def id(self):
         '''
