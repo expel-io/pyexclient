@@ -69,7 +69,7 @@ def main():
     since = datetime.now() - timedelta(minutes=5)
 
     while True:
-        print("Querying device status since: {since}".format(since=since))
+        print("Querying investigation status since: {since}".format(since=since))
 
         now = datetime.now()
         for change in get_inv_changes(xc, since):
