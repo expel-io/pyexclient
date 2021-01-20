@@ -26,6 +26,10 @@ See the example script `Jira Sync <https://github.com/expel-io/pyexclient/blob/m
 
 .. _script poll for unhealthy device:
 
-Script: Poll unhealthy devices 
+Script: Poll unhealthy devices
 ------------------------------
 See the example script `Poll For Unhealthy Devices <https://github.com/expel-io/pyexclient/blob/master/examples/poll_device_health.py>`_. This script will poll Expel Workbench for any devices marked unhealthy in the past five minutes.
+
+Script: Poll for investigation / incident changes
+-------------------------------------------------
+See the example script `Poll For Investigaiton / Incident updates <https://github.com/expel-io/pyexclient/blob/master/examples/poll_inv_changes.py>`_. This script will poll Expel Workbench for any updates to investigations or incidents in the past five minutes.
