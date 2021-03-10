@@ -33,3 +33,7 @@ See the example script `Poll For Unhealthy Devices <https://github.com/expel-io/
 Script: Poll for investigation / incident changes
 -------------------------------------------------
 See the example script `Poll For Investigaiton / Incident updates <https://github.com/expel-io/pyexclient/blob/master/examples/poll_inv_changes.py>`_. This script will poll Expel Workbench for any updates to investigations or incidents in the past five minutes.
+
+Script: Pretty Print Lead Expel Alert Evidence
+----------------------------------------------
+See the example script `Pretty Print Lead Expel Alert Evidence <https://github.com/expel-io/pyexclient/blob/master/examples/pprint_lead_alert_evidence.py>`_. This script will pretty print the Expel Alert details along with all correlated vendor evidences.
