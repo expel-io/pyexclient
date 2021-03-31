@@ -6,7 +6,7 @@ import json
 import logging
 import os
 import pprint
-import time
+#import time
 import warnings
 from urllib.parse import urlencode
 from urllib.parse import urljoin
@@ -4921,15 +4921,15 @@ class WorkbenchCoreClient:
                 # if connection was fatally closed, create a new session and try again
                 logger.warning("got connection error, skip recreating session...")
                 raise Exception(e)
-                #time.sleep(5)
-                #self.make_session()
-                #resp = self.session.request(
-                #    method=method,
-                #    url=url,
-                #    headers=headers,
-                #    data=data,
-                #    **request_kwargs
-                #)
+                # time.sleep(5)
+                # self.make_session()
+                # resp = self.session.request(
+                #     method=method,
+                #     url=url,
+                #     headers=headers,
+                #     data=data,
+                #     **request_kwargs
+                # )
 
         if self.debug and do_print:
             logger.debug(pprint.pformat(resp.json()))
