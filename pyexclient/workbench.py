@@ -6,7 +6,7 @@ import json
 import logging
 import os
 import pprint
-import time
+# import time
 import warnings
 from urllib.parse import urlencode
 from urllib.parse import urljoin
@@ -4917,18 +4917,19 @@ class WorkbenchCoreClient:
                     data=data,
                     **request_kwargs
                 )
-            except ConnectionError:
+            except ConnectionError as e:
                 # if connection was fatally closed, create a new session and try again
-                logger.warning("got connection error, recreating session...")
-                time.sleep(5)
-                self.make_session()
-                resp = self.session.request(
-                    method=method,
-                    url=url,
-                    headers=headers,
-                    data=data,
-                    **request_kwargs
-                )
+                logger.warning("got connection error, skip recreating session...")
+                raise Exception(e)
+                # time.sleep(5)
+                # self.make_session()
+                # resp = self.session.request(
+                #     method=method,
+                #     url=url,
+                #     headers=headers,
+                #     data=data,
+                #     **request_kwargs
+                # )
 
         if self.debug and do_print:
             logger.debug(pprint.pformat(resp.json()))
@@ -4983,9 +4984,9 @@ class WorkbenchClient(WorkbenchCoreClient):
     :rtype: WorkbenchClient
     '''
 
-    def __init__(self, base_url, username=None, password=None, mfa_code=None, token=None, prompt_on_delete=True):
+    def __init__(self, base_url, username=None, password=None, mfa_code=None, token=None, prompt_on_delete=True, retries=False):
         super().__init__(base_url, username=username, password=password,
-                         mfa_code=mfa_code, token=token, prompt_on_delete=prompt_on_delete)
+                         mfa_code=mfa_code, token=token, prompt_on_delete=prompt_on_delete, retries=retries)
 
     def create_manual_inv_action(self, title: str, reason: str, instructions: str, investigation_id: str = None, expel_alert_id: str = None, security_device_id: str = None, action_type: str = 'MANUAL'):
         '''
