@@ -4918,7 +4918,7 @@ class WorkbenchCoreClient:
                     **request_kwargs
                 )
             except ConnectionError as e:
-                if self.retries > 0 or ('retries' in request_kwargs and not request_kwargs['retries']):
+                if self.retries > 0:
                     # if connection was fatally closed, create a new session and try again
                     logger.warning("got connection error, recreating session...")
                     time.sleep(5)
