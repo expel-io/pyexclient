@@ -4931,7 +4931,7 @@ class WorkbenchCoreClient:
                         **request_kwargs
                     )
                 else:
-                    # skip recreating a new session if retries > 0
+                    # skip recreating a new session if retries = 0
                     logger.warning("got connection error, skip recreating session...")
                     raise Exception(e)
 
