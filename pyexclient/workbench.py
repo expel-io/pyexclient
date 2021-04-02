@@ -6,7 +6,7 @@ import json
 import logging
 import os
 import pprint
-# import time
+import time
 import warnings
 from urllib.parse import urlencode
 from urllib.parse import urljoin
@@ -4918,18 +4918,22 @@ class WorkbenchCoreClient:
                     **request_kwargs
                 )
             except ConnectionError as e:
-                # if connection was fatally closed, create a new session and try again
-                logger.warning("got connection error, skip recreating session...")
-                raise Exception(e)
-                # time.sleep(5)
-                # self.make_session()
-                # resp = self.session.request(
-                #     method=method,
-                #     url=url,
-                #     headers=headers,
-                #     data=data,
-                #     **request_kwargs
-                # )
+                if self.retries > 0:
+                    # if connection was fatally closed, create a new session and try again
+                    logger.warning("got connection error, recreating session...")
+                    time.sleep(5)
+                    self.make_session()
+                    resp = self.session.request(
+                        method=method,
+                        url=url,
+                        headers=headers,
+                        data=data,
+                        **request_kwargs
+                    )
+                else:
+                    # skip recreating a new session if retries = 0
+                    logger.warning("got connection error, skip recreating session...")
+                    raise Exception(e)
 
         if self.debug and do_print:
             logger.debug(pprint.pformat(resp.json()))
@@ -4984,7 +4988,7 @@ class WorkbenchClient(WorkbenchCoreClient):
     :rtype: WorkbenchClient
     '''
 
-    def __init__(self, base_url, username=None, password=None, mfa_code=None, token=None, prompt_on_delete=True, retries=False):
+    def __init__(self, base_url, username=None, password=None, mfa_code=None, token=None, prompt_on_delete=True, retries=0):
         super().__init__(base_url, username=username, password=password,
                          mfa_code=mfa_code, token=token, prompt_on_delete=prompt_on_delete, retries=retries)
 
