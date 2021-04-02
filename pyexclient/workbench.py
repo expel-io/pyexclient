@@ -13,7 +13,6 @@ from urllib.parse import urljoin
 
 import requests
 from requests.adapters import HTTPAdapter
-from requests.exceptions import ConnectionError
 from requests.packages.urllib3.exceptions import InsecureRequestWarning
 from urllib3.util.retry import Retry
 
@@ -4909,26 +4908,13 @@ class WorkbenchCoreClient:
             headers['Authorization'] = self.session.headers['Authorization']
             resp = requests.post(url, headers=headers, data=data, files=files, **request_kwargs)
         else:
-            try:
-                resp = self.session.request(
-                    method=method,
-                    url=url,
-                    headers=headers,
-                    data=data,
-                    **request_kwargs
-                )
-            except ConnectionError:
-                # if connection was fatally closed, create a new session and try again
-                logger.warning("got connection error, recreating session...")
-                time.sleep(5)
-                self.make_session()
-                resp = self.session.request(
-                    method=method,
-                    url=url,
-                    headers=headers,
-                    data=data,
-                    **request_kwargs
-                )
+            resp = self.session.request(
+                method=method,
+                url=url,
+                headers=headers,
+                data=data,
+                **request_kwargs
+            )
 
         if self.debug and do_print:
             logger.debug(pprint.pformat(resp.json()))
