@@ -6,7 +6,6 @@ import json
 import logging
 import os
 import pprint
-import time
 import warnings
 from urllib.parse import urlencode
 from urllib.parse import urljoin
