@@ -5054,7 +5054,7 @@ class WorkbenchClient(WorkbenchCoreClient):
         # Create the investigative action in WB
         ia = self.investigative_actions.create(title=title, status='RUNNING', reason=reason, action_type='TASKABILITY',
                                                capability_name=capability_name, input_args=input_args)
-        ia.relationship.vendor_device = vendor_device_id
+        ia.relationship.security_device = vendor_device_id
         if investigation_id:
             ia.relationship.investigation = investigation_id
         else:
