@@ -1102,15 +1102,15 @@ class InvestigativeActionsResourceInstance(FilesResourceInstance):
         # Get the customer id from the inv or expel alert relationship
         customer_id = None
         if self.relationship.investigation.id:
-            customer_id = self._conn.investigations.get(id=self.relationship.investigation.id).customer.id
+            customer_id = self._conn.investigations.get(id=self.relationship.investigation.id).organization.id
         elif self.relationship.expel_alert.id:
-            customer_id = self._conn.expel_alerts.get(id=self.relationship.expel_alert.id).customer.id
+            customer_id = self._conn.expel_alerts.get(id=self.relationship.expel_alert.id).organization.id
         else:
             raise Exception("Could not determine customer id")
 
         # Create a files object
         f = self._conn.files.create(filename=filename, file_meta=file_meta, expel_file_type=expel_file_type)
-        f.relationship.customer = customer_id
+        f.relationship.organization = customer_id
         # This gets pluralized ..
         f.relationship.investigative_actions = self.id
         resp = f.save()
