@@ -506,7 +506,7 @@ class TestBaseResourceObject:
             invs.append(inv)
             assert isinstance(inv, Investigations)
             assert inv._id == 'e12da56a-1111-1111-9b73-111ba6852193'
-        assert len(invs) == 18
+        assert len(invs) == 9
 
     def test_create(self, mock_client, raw_investigation_dict):
         inv = mock_client.investigations.create(**raw_investigation_dict['attributes'])
