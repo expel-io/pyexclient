@@ -46,18 +46,15 @@ def main():
     for rem in xc.remediation_actions.search(created_at=window(start_date, end_date), status=neq('COMPLETED', 'CLOSED')):
         # Calculate the number of days since the remediation action was created.
         since = (datetime.datetime.now() - datetime.datetime.strptime(rem.created_at, "%Y-%m-%dT%H:%M:%S.%fZ")).days
-        # print message to console
-        print(f"{rem.action} created {rem.created_at} ({since} days ago) currently it is {rem.status} and the comment is \"{rem.comment if rem.comment else ''}\"")
-        if 'values' in rem._attrs and rem.values:
-            # If there are remediation values associated with the actions print them to screen. This is where IPs, or hostname identifiers are specified.
-            print(f"\t{rem.values['name']}")
-            for key, val in rem.values.items():
-                if key == 'name':
-                    continue
-                print(f"\t\t* {key} = {val}")
-        elif 'remediation_action_assets' in rem._data['relationships']:
-            for a in rem.remediation_action_assets:
-                print(f"\t{a.status} - {a.asset_type} - {a.value}")
+        print(f'{rem.action} created {rem.created_at} ({since} days ago) has status {rem.status} and the comment is "{rem.comment if rem.comment else ""}"')
+
+        # Count the number of assets we have
+        count = xc.remediation_action_assets.search(relationship('remediation_action.id', rem.id)).count()
+        print(f'Found {count} remediation action assets for remediation action {rem.id}')
+
+        # Now print all the assets we have for the parent action
+        for asset in xc.remediation_action_assets.search(relationship('remediation_action.id', rem.id)):
+            print(f'\t{asset.status} - {asset.asset_type} - {asset.value}')
     # End documentation snippet
 
 
