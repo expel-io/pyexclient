@@ -76,7 +76,7 @@ In the snippet above we’re searching for any remediation action that is not cu
 
 contains()
 """"""""""
-.. warning:: Partial matches are not indexed and API performance can be impacted by doing a lot of these requests. Investigative data is indexed and optimized for searching, but you must use flag("search", "term").
+.. warning:: Partial matches are not indexed and API performance can be impacted by doing a lot of these requests. Investigative data is indexed and optimized for searching, but you must use search=flag("term").
 
 
 This operator will do a substring search (“partial match”) on a given attribute’s value and return the resource instances that have a partial match. This search operation is case insensitive. This operator will return resource instances where the specified attribute is equal to the value provided to filter by.
@@ -151,19 +151,17 @@ Our API supports a custom query parameter called flag. Flag allows callers to pa
 
 .. code-block:: python
 
-    for inv in x.investigations.search(flag("search", "ransomware")):
+    for inv in x.investigations.search(search=flag("ransomware")):
         print(f"Incident related to ransomware: {inv.title}")
 
 limit()
 """""""
-The API supports a limit operator that will limit the number of results returned by the server. This can be used when you you are calling an API and you only need, or care about one result.
+The API supports a limit operator that will limit the number of results returned by the server in each requested page. This can be used when you you are calling an API and you only need, or care about one result. Note if you iterate over responses, you will continue to request pages with this specified size. Pair this operator with one_or_none() to retrieve a single resource.
 
 .. code-block:: python
 
-    for inv in x.investigations.search(flag("search", "ransomware"), limit(1)):
-        print(f"Incident related to ransomware: {inv.title}")
-
-
+    inv = x.investigations.search(limit(1)).one_or_none()
+    print(f"Investigation: {inv.title}")
 
 
 relationship(...)
