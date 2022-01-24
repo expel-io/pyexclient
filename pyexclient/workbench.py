@@ -936,10 +936,8 @@ class ResourceInstance:
                         continue
                     # Get the data key in the relationship
                     rels = rel_entry.get('data', [])
-                    # Annoyingly it can be None..
                     if rels is None:
                         continue
-                    # Annoyingly can be a dict or list, we'll force list on everything ..
                     elif type(rels) == dict:
                         rels = [rels]
                         single_entry = True
