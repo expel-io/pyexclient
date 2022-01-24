@@ -33,7 +33,7 @@
 <!-- ABOUT THE PROJECT -->
 ## About The Project
 
-Pyexclient is a Python client for the Expel Workbench. If you can click it in the UI, you can also automate it with our APIs. Want to build a custom report? Integrate Expel Workbench with your SOAR platform? Pyexclient can help you acommplish that and more!
+Pyexclient is a Python client for the Expel Workbench. If you can click it in the UI, you can also automate it with our APIs. Want to build a custom report? Integrate Expel Workbench with your SOAR platform? Pyexclient can help you accomplish that and more!
 
 
 <!-- GETTING STARTED -->
