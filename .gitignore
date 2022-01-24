@@ -6,5 +6,8 @@ junit
 *.pyc
 *.sw*
 
+.idea
+.vscode
+
 *.backup
 .pytest_cache/
