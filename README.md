@@ -43,7 +43,7 @@ To get up and running follow these simple steps.
 
 ### Prerequisites
 
-Pyexclient requires `python>=3.7`.
+Pyexclient requires `python>=3.9` and the `requests` package. 
 
 ### Installation
 

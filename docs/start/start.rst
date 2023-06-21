@@ -13,7 +13,7 @@ To get an API key, you’ll need to reach out to your Expel Engagement Manager. 
 
 Installation
 ------------
-Pyexclient requires Python3.7+. It has no additional dependencies. 
+Pyexclient requires Python3.9+ and the requests package. 
 
 To install pyexclient using pip, run: 
 
