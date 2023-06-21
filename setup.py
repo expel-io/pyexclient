@@ -16,7 +16,7 @@ setup(
     version=versioneer.get_version(),
     cmdclass=versioneer.get_cmdclass(),
     packages=['pyexclient'],
-    python_requires='>=3.7',
+    python_requires='>=3.9',
     install_requires=[
         'requests'
     ],
