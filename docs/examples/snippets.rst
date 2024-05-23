@@ -90,7 +90,7 @@ Iterate over all the investigations and print their title and status.
 
     for inv in xc.investigations:
         s = "Investigation ID: {inv_id} Title: {inv_title} Status: {inv_status}"
-        status = "OPEN" if inv.decision is not None else "CLOSED"
+        status = "OPEN" if inv.decision is None else "CLOSED"
         print(s.format(inv_id=inv.id, inv_title=inv.title, inv_status=status))
 
 .. _snippet list comments:
