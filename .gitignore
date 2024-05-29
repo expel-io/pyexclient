@@ -11,3 +11,5 @@ junit
 
 *.backup
 .pytest_cache/
+
+venv

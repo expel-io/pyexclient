@@ -67,7 +67,7 @@ master_doc = 'index'
 #
 # This is also used if you do content translation via gettext catalogs.
 # Usually you set "language" from the command line for these cases.
-language = None
+language = 'en'
 
 # List of patterns, relative to source directory, that match files and
 # directories to ignore when looking for source files.
@@ -106,6 +106,11 @@ html_static_path = ['_static']
 #html_style = 'css/expel.css'
 html_context = {
     'css_files': [
+        # for some reason theme.css isn't shipping 
+        # copied the css from the working 1.0.0 build and provided it as an override for now
+        # we need to be able to update the content of these docs without worrying about CSS
+        # or keeping up with changes to the latest sphinx themes
+        '_static/css/theme.css',
         '_static/css/theme_overrides.css',  # override wide tables in RTD theme
         ],
 }
