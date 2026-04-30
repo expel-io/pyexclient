@@ -44,7 +44,7 @@ def main():
     for device in device_list:
         try:
             config = xc.secrets.get(id=f'security_device-{device}') #I assumed the docs had a typo for a while, but the URL *actually* looks like this lol
-            defined_secrets = config._data['attributes']['secret'].keys()
+            defined_secrets = config._data['attributes']['secret'].keys() # the .keys() returns only which secrets *are defined*, not the values. Be very careful when copypasting if you delete this
             key_list = ','.join(defined_secrets)
             csv_str = f"{device},{key_list},"
             print(csv_str)
@@ -53,7 +53,7 @@ def main():
             csv_str = f"{device},ERROR,"
             print(csv_str)
             hail_mary_dict[device] = "ERROR"
-        time.sleep(60) # Yes, you *actually* have to wait this long per device lol, my deepest condolences
+        time.sleep(60) # Yes, you *actually* have to wait this long per device, my deepest condolences
 
     print(json.dumps(hail_mary_dict, indent=4))
     
